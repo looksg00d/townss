@@ -1,0 +1,36 @@
+2025/02/16-14:25:32.978 2304 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile6\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm since it was missing.
+2025/02/16-14:25:32.982 2304 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile6\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
+2025/02/16-14:26:05.916 4dd4 Level-0 table #5: started
+2025/02/16-14:26:05.945 4dd4 Level-0 table #5: 3121079 bytes OK
+2025/02/16-14:26:05.952 4dd4 Delete type=0 #3
+2025/02/16-14:26:08.747 4dd4 Level-0 table #7: started
+2025/02/16-14:26:08.758 4dd4 Level-0 table #7: 1265232 bytes OK
+2025/02/16-14:26:08.760 4dd4 Delete type=0 #4
+2025/02/16-14:26:11.180 4dd4 Level-0 table #9: started
+2025/02/16-14:26:11.202 4dd4 Level-0 table #9: 1265184 bytes OK
+2025/02/16-14:26:11.204 4dd4 Delete type=0 #6
+2025/02/16-14:26:24.726 4dd4 Level-0 table #11: started
+2025/02/16-14:26:24.781 4dd4 Level-0 table #11: 11717499 bytes OK
+2025/02/16-14:26:24.786 4dd4 Delete type=0 #8
+2025/02/16-14:26:30.478 4dd4 Level-0 table #13: started
+2025/02/16-14:26:30.536 4dd4 Level-0 table #13: 11717499 bytes OK
+2025/02/16-14:26:30.539 4dd4 Delete type=0 #10
+2025/02/16-14:27:00.480 4dd4 Level-0 table #15: started
+2025/02/16-14:27:00.538 4dd4 Level-0 table #15: 11717499 bytes OK
+2025/02/16-14:27:00.541 4dd4 Delete type=0 #12
+2025/02/16-14:27:00.542 4dd4 Compacting 4@0 + 1@1 files
+2025/02/16-14:27:00.643 4dd4 Generated table #16@0: 1 keys, 11717499 bytes
+2025/02/16-14:27:00.646 4dd4 Compacted 4@0 + 1@1 files => 11717499 bytes
+2025/02/16-14:27:00.647 4dd4 compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/02/16-14:27:00.648 4dd4 Delete type=2 #7
+2025/02/16-14:27:00.648 4dd4 Delete type=2 #9
+2025/02/16-14:27:00.648 4dd4 Delete type=2 #11
+2025/02/16-14:27:00.648 4dd4 Delete type=2 #13
+2025/02/16-14:27:00.648 4dd4 Delete type=2 #15
+2025/02/16-14:27:00.651 4dd4 Compacting 1@1 + 1@2 files
+2025/02/16-14:27:00.722 4dd4 Generated table #17@1: 1 keys, 11717499 bytes
+2025/02/16-14:27:00.728 4dd4 Generated table #18@1: 1 keys, 133 bytes
+2025/02/16-14:27:00.728 4dd4 Compacted 1@1 + 1@2 files => 11717632 bytes
+2025/02/16-14:27:00.729 4dd4 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/16-14:27:00.729 4dd4 Delete type=2 #5
+2025/02/16-14:27:00.729 4dd4 Delete type=2 #16

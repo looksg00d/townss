@@ -13,10 +13,10 @@ class ProfileService {
      * @param {Function} dependencies.loadProfiles - Функция для загрузки профилей.
      * @param {Function} dependencies.getCharacterObj - Функция для получения объекта персонажа.
      */
-    constructor({ loadProfiles, getCharacterObj }) {
+    constructor({ loadProfiles, logger, characterService }) {
         this.loadProfiles = loadProfiles;
-        this.getCharacterObj = getCharacterObj;
         this.logger = logger;
+        this.characterService = characterService;
         this.profiles = {};
     }
 
@@ -33,7 +33,7 @@ class ProfileService {
         for (const [profileId, profile] of Object.entries(this.profiles)) {
             if (profile.character) {
                 try {
-                    profile.characterObj = await this.getCharacterObj(profile.character);
+                    profile.characterObj = await this.characterService.getCharacterByUsername(profile.character);
                     this.logger.debug(`Профиль ${profileId} связан с персонажем ${profile.character}`);
                 } catch (error) {
                     this.logger.warn(`Ошибка загрузки персонажа для профиля ${profileId}: ${error.message}`);

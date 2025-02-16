@@ -56,6 +56,18 @@ class CharacterService {
         }
         return this.characters[Math.floor(Math.random() * this.characters.length)];
     }
+
+    async getCharacterByUsername(username) {
+        if (!this.characters.length) {
+            await this.loadCharacters(process.env.CHARACTERS_PATH);
+        }
+        
+        const character = this.characters.find(c => c.username === username);
+        if (!character) {
+            throw new Error(`Персонаж с username ${username} не найден`);
+        }
+        return character;
+    }
 }
 
 module.exports = CharacterService;

@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
-const { EmailReader, getVerificationCode, fetchMessage, fetchHeaders } = require('./email_reader');
+const EmailReader = require('./email_reader');
 require('dotenv').config();
 const { loadProfiles } = require('./profiles');
 const fs = require('fs').promises;
@@ -245,11 +245,8 @@ async function main(profileId) {
         const seedPhrase = profile.metamaskSeed;
         const password = profile.metamaskPassword;
         
-        // Для EmailReader используем данные профиля
-        const emailReader = new EmailReader(
-            profile.email,
-            profile.emailPassword
-        );
+        // Создаем экземпляр EmailReader
+        const emailReader = new EmailReader(profile.email, profile.emailPassword);
 
         // При сохранении состояния используем файл профиля
         await browser.storageState({ path: profile.authFile });
@@ -409,43 +406,23 @@ async function main(profileId) {
         logger.info('Ожидание отправки письма...');
         await townsPage.waitForTimeout(3000);
 
-        // Получаем код из email с повторными попытками
+        // Получаем код из email
         logger.info('Чтение кода из email...');
-        let verificationCode = null;
-        let attempts = 0;
-        const maxAttempts = 3; // Уменьшим количество попыток, чтобы не затягивать процесс
-        const retryDelay = 10000; // 10 секунд
-
-        while (!verificationCode && attempts < maxAttempts) {
-            attempts++;
-            logger.info(`Попытка ${attempts} получения кода...`);
+        const verificationCode = await emailReader.getVerificationCode();
+        
+        if (!verificationCode || verificationCode === 'METAMASK_FALLBACK') {
+            logger.warn('Не удалось получить код подтверждения, переходим к MetaMask');
+            // Здесь можно добавить логику перехода к MetaMask
+        } else {
+            logger.info('Получен код:', verificationCode);
             
-            try {
-                verificationCode = await getVerificationCode.call(emailReader);
-                
-                if (!verificationCode) {
-                    logger.info(`Код не получен, ждем ${retryDelay/1000} секунд...`);
-                    await townsPage.waitForTimeout(retryDelay);
-                }
-            } catch (error) {
-                logger.error(`Ошибка при попытке ${attempts} получения кода:`, error.message);
-                if (attempts < maxAttempts) {
-                    logger.info(`Повторная попытка через ${retryDelay/1000} секунд...`);
-                    await townsPage.waitForTimeout(retryDelay);
-                }
+            // Вводим 6-значный код
+            logger.info('Ввод кода подтверждения...');
+            for (let i = 0; i < 6; i++) {
+                const inputSelector = `xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[2]/div[1]/div[2]/input[${i + 1}]`;
+                await townsPage.locator(inputSelector).fill(verificationCode[i]);
+                await townsPage.waitForTimeout(100);
             }
-        }
-
-        if (!verificationCode) {
-            throw new Error(`Не удалось получить код подтверждения после ${maxAttempts} попыток`);
-        }
-
-        // Вводим 6-значный код
-        logger.info('Ввод кода подтверждения...');
-        for (let i = 0; i < 6; i++) {
-            const inputSelector = `xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[2]/div[1]/div[2]/input[${i + 1}]`;
-            await townsPage.locator(inputSelector).fill(verificationCode[i]);
-            await townsPage.waitForTimeout(100);
         }
 
         // Ждем обработки кода
@@ -509,7 +486,7 @@ async function main(profileId) {
         await metamaskPage.locator('xpath=/html/body/div[1]/div/div/div/div[2]/div[3]/button[2]').click();
 
     } catch (error) {
-        logger.error('Произошла ошибка:', error);
+        logger.error('Ошибка при выполнении профиля:', error);
         if (browser) {
             try {
                 const pages = await browser.pages();

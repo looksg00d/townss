@@ -16,7 +16,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 const config = require('./config/config');
-const logger = require('./services/logger').withLabel('run-');
+const logger = require('./services/logger').withLabel('Discussion');
 const OpenAIService = require('./services/r_openaiservice');
 const CharacterService = require('./services/r_characterservice');
 const ResponseGeneratorService = require('./services/r_responsegeneratorservice');
@@ -104,7 +104,8 @@ async function runDiscussion(insightId) {
         const publicationService = new PublicationService({ logger });
         const profileService = new ProfileService({
             loadProfiles,
-            logger
+            logger,
+            characterService
         });
         await profileService.initialize();
 
@@ -215,27 +216,178 @@ async function processInsights(insights) {
     }
 }
 
-// Запуск скрипта
-if (require.main === module) {
-    const insightIdArg = process.argv[2];
-    const insightId = insightIdArg ? parseInt(insightIdArg, 10) : null;
-
-    if (insightIdArg && isNaN(insightId)) {
-        logger.error('The insight ID must be a number!');
-        logger.info('Usage: node run-discussion.js <insightId>');
-        process.exit(1);
-    }
-
-    if (!insightId) {
-        logger.error('An insight ID must be provided!');
-        logger.info('Usage: node run-discussion.js <insightId>');
-        process.exit(1);
-    }
-
-    runDiscussion(insightId).catch(error => {
-        logger.error(`Script terminated with error: ${error.message}`);
-        process.exit(1);
-    });
+/**
+ * Получает текущее состояние обсуждения
+ */
+async function getDiscussionStatus() {
+    const profiles = await loadProfiles();
+    const mainCharacter = characterService.getMainCharacter();
+    const mainProfileId = Object.keys(profiles).find(profileId => 
+        profiles[profileId].character === mainCharacter.username
+    );
+    
+    return {
+        mainInsider: mainProfileId,
+        profiles: Object.values(profiles).map(profile => ({
+            id: profile.id,
+            status: profile.status,
+            role: profile.id === mainProfileId ? 'insider' : 'responder'
+        }))
+    };
 }
 
-module.exports = { runDiscussion };
+/**
+ * Запускает обсуждение с возможностью изменения профилей
+ * @param {Object} options - Параметры запуска
+ * @param {Array} options.profiles - Список профилей
+ * @param {number} options.insightId - ID инсайта
+ */
+async function runDiscussionWithProfiles({ profiles, insightId }) {
+    try {
+        logger.info('=== Starting Discussion ===');
+
+        // Инициализация OpenAI с конфигурацией
+        logger.info('Initializing OpenAI service...');
+        const openAIService = new OpenAIService({
+            apiKey: process.env.GROQ_API_KEY,
+            logger
+        });
+        const openai = openAIService.getClient();
+
+        // Инициализация FileService и других сервисов
+        const fileService = new FileService();
+        const insightReaderService = new InsightReaderService({
+            logger,
+            config,
+            fileService
+        });
+
+        // Создаем и инициализируем остальные сервисы
+        const characterService = new CharacterService({ logger });
+        await characterService.loadCharacters(process.env.CHARACTERS_PATH);
+
+        // Инициализация Apify клиента
+        const Apify = require('apify-client').ApifyClient;
+        const apifyClient = new Apify({
+            token: config.apify.token
+        });
+
+        const dataFetchService = new DataFetchService({
+            apifyClient,
+            openAI: openai,
+            logger
+        });
+
+        const responseGenerator = new ResponseGeneratorService({
+            openAI: openai,
+            dataFetchService,
+            logger,
+            config
+        });
+
+        const insightService = new InsightService({
+            insightReaderService,
+            logger
+        });
+
+        const publicationService = new PublicationService({ logger });
+        const profileService = new ProfileService({
+            loadProfiles,
+            logger,
+            characterService
+        });
+        await profileService.initialize();
+
+        const discussionServiceInstance = new DiscussionService({
+            characterService,
+            responseGenerator,
+            logger,
+            config,
+            profileService
+        });
+
+        // Получение случайного инсайта вместо конкретного ID
+        logger.info('Getting random insight...');
+        const randomInsightId = await insightReaderService.getRandomInsightId();
+        logger.info(`Selected random insight ID: ${randomInsightId}`);
+        
+        const insight = await insightService.getInsight(randomInsightId);
+        logger.debug(`Retrieved insight: ${JSON.stringify(insight)}`);
+
+        // Теперь getMainCharacter() должен работать, так как персонажи загружены
+        const mainCharacter = characterService.getMainCharacter();
+        
+        // Публикация инсайта от имени основного персонажа
+        const mainProfileId = Object.keys(profiles).find(profileId => profiles[profileId].character === mainCharacter.username);
+        if (!mainProfileId) { 
+            throw new Error(`Профиль для персонажа ${mainCharacter.username} не найден`);
+        }
+        logger.info(`Publishing insight as ${mainProfileId}`);
+        await publicationService.publishInsight(mainProfileId, randomInsightId);
+
+        // Пауза между сообщениями
+        const settings = await getDiscussionSettings();
+        const messageDelay = getRandomDelay(settings.messageDelay);
+        logger.info(`Pausing for ${messageDelay} milliseconds...`);
+        await delay(messageDelay);
+
+        // Выбор случайного профиля для ответа
+        logger.info('Selecting a random responder');
+        const responder = profileService.selectRandomResponder(mainProfileId);
+
+        // Генерация ответа от выбранного профиля
+        logger.info('Generating response from selected character');
+        const response = await responseGenerator.generateResponse(
+            responder.characterObj, 
+            insight.content
+        );
+        logger.debug(`Generated response: ${response}`);
+
+        // Публикуем ответ
+        logger.info('Publishing the generated response');
+        await publicationService.publishResponse(responder.id, response);
+
+        // После успешной публикации удаляем использованный инсайт
+        logger.info(`Deleting used insight ${randomInsightId}`);
+        await insightReaderService.deleteInsight(randomInsightId);
+        
+        logger.info('=== Discussion Successfully Completed ===');
+        return { success: true };
+    } catch (error) {
+        logger.error('Error in runDiscussionWithProfiles:', error);
+        throw error;
+    }
+}
+
+// Запуск скрипта
+if (require.main === module) {
+    (async () => {
+        try {
+            logger.info('=== Starting Discussion Script ===');
+            
+            // Получаем случайный инсайт
+            const insightReaderService = new InsightReaderService({
+                logger,
+                config,
+                fileService: new FileService()
+            });
+            
+            const randomInsightId = await insightReaderService.getRandomInsightId();
+            logger.info(`Selected random insight ID: ${randomInsightId}`);
+            
+            // Запускаем обсуждение с выбранным инсайтом
+            await runDiscussion(randomInsightId);
+            
+            logger.info('=== Discussion Script Completed Successfully ===');
+        } catch (error) {
+            logger.error(`Script terminated with error: ${error.message}`);
+            process.exit(1);
+        }
+    })();
+}
+
+module.exports = { 
+    runDiscussion,
+    getDiscussionStatus,
+    runDiscussionWithProfiles
+};

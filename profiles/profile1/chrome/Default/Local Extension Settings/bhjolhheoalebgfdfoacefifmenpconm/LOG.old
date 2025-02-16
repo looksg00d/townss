@@ -1,3 +1,19 @@
-2025/02/16-12:09:41.188 1d64 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
-2025/02/16-12:09:41.189 1d64 Recovering log #17
-2025/02/16-12:09:41.189 1d64 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/000017.log 
+2025/02/16-20:54:01.190 396c Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
+2025/02/16-20:54:01.190 396c Recovering log #17
+2025/02/16-20:54:01.228 396c Level-0 table #19: started
+2025/02/16-20:54:01.281 396c Level-0 table #19: 11742820 bytes OK
+2025/02/16-20:54:01.287 396c Delete type=0 #17
+2025/02/16-20:54:01.288 4210 Compacting 4@0 + 0@1 files
+2025/02/16-20:54:01.419 4210 Generated table #21@0: 1 keys, 11742820 bytes
+2025/02/16-20:54:01.423 4210 Compacted 4@0 + 0@1 files => 11742820 bytes
+2025/02/16-20:54:01.424 4210 compacted to: files[ 0 1 2 0 0 0 0 ]
+2025/02/16-20:54:01.425 4210 Compacting 1@1 + 1@2 files
+2025/02/16-20:54:01.499 4210 Generated table #22@1: 1 keys, 11742820 bytes
+2025/02/16-20:54:01.500 4210 Compacted 1@1 + 1@2 files => 11742820 bytes
+2025/02/16-20:54:01.502 4210 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/16-20:54:01.502 4210 Delete type=2 #8
+2025/02/16-20:54:01.502 4210 Delete type=2 #11
+2025/02/16-20:54:01.502 4210 Delete type=2 #14
+2025/02/16-20:54:01.502 4210 Delete type=2 #16
+2025/02/16-20:54:01.502 4210 Delete type=2 #19
+2025/02/16-20:54:01.502 4210 Delete type=2 #21
