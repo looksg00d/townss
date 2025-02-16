@@ -1,0 +1,33 @@
+2025/02/16-12:30:32.637 31b4 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm since it was missing.
+2025/02/16-12:30:32.650 31b4 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
+2025/02/16-12:31:04.560 818 Level-0 table #5: started
+2025/02/16-12:31:04.625 818 Level-0 table #5: 13027229 bytes OK
+2025/02/16-12:31:04.627 818 Delete type=0 #3
+2025/02/16-12:31:20.405 818 Level-0 table #7: started
+2025/02/16-12:31:20.463 818 Level-0 table #7: 11556687 bytes OK
+2025/02/16-12:31:20.466 818 Delete type=0 #4
+2025/02/16-12:31:20.468 818 Compacting 1@1 + 1@2 files
+2025/02/16-12:31:20.574 818 Generated table #8@1: 1 keys, 11556687 bytes
+2025/02/16-12:31:20.585 818 Generated table #9@1: 1 keys, 133 bytes
+2025/02/16-12:31:20.585 818 Compacted 1@1 + 1@2 files => 11556820 bytes
+2025/02/16-12:31:20.586 818 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/16-12:31:20.587 818 Delete type=2 #5
+2025/02/16-12:31:20.587 818 Delete type=2 #7
+2025/02/16-12:31:29.368 818 Level-0 table #11: started
+2025/02/16-12:31:29.423 818 Level-0 table #11: 11556687 bytes OK
+2025/02/16-12:31:29.426 818 Delete type=0 #6
+2025/02/16-12:31:29.427 818 Compacting 1@1 + 1@2 files
+2025/02/16-12:31:29.525 818 Generated table #12@1: 1 keys, 11556687 bytes
+2025/02/16-12:31:29.528 818 Compacted 1@1 + 1@2 files => 11556687 bytes
+2025/02/16-12:31:29.529 818 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/16-12:31:29.530 818 Delete type=2 #8
+2025/02/16-12:31:29.530 818 Delete type=2 #11
+2025/02/16-12:31:59.196 818 Level-0 table #14: started
+2025/02/16-12:31:59.245 818 Level-0 table #14: 11556687 bytes OK
+2025/02/16-12:31:59.247 818 Delete type=0 #10
+2025/02/16-12:31:59.249 818 Compacting 1@1 + 1@2 files
+2025/02/16-12:31:59.316 818 Generated table #15@1: 1 keys, 11556687 bytes
+2025/02/16-12:31:59.318 818 Compacted 1@1 + 1@2 files => 11556687 bytes
+2025/02/16-12:31:59.319 818 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/16-12:31:59.319 818 Delete type=2 #12
+2025/02/16-12:31:59.319 818 Delete type=2 #14

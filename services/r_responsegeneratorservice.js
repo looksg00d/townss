@@ -1,0 +1,118 @@
+// towns/services/ResponseGeneratorService.js
+const ResponseGenerationError = require('../errors/ResponseGenerationError');
+const logger = require('./logger').withLabel('ResponseGeneratorService');
+
+class ResponseGeneratorService {
+    /**
+     * @param {Object} dependencies - Объект зависимостей.
+     * @param {OpenAI} dependencies.openAI - Клиент OpenAI.
+     * @param {DataFetchService} dependencies.dataFetchService - Сервис для получения дополнительной информации.
+     * @param {Object} dependencies.logger - Система логирования.
+     */
+    constructor({ openAI, dataFetchService, logger, config }) {
+        this.logger = logger || require('./logger').withLabel('ResponseGeneratorService');
+        this.logger.debug('Initializing ResponseGeneratorService');
+        this.logger.debug('OpenAI client:', openAI);
+        
+        this.openai = openAI;
+        this.dataFetchService = dataFetchService;
+        this.config = config;
+        
+        if (!this.openai) {
+            this.logger.error('OpenAI client is not provided!');
+        }
+    }
+
+    /**
+     * Генерирует ответ на основе характера персонажа, контента и темы.
+     * @param {Character} character - Объект персонажа.
+     * @param {string} content - Контент для ответа.
+     * @param {string} [topic] - Тема обсуждения.
+     * @returns {Promise<string>} - Сгенерированный ответ.
+     * @throws {ResponseGenerationError} - Если произошла ошибка при генерации ответа.
+     */
+    async generateResponse(character, content, topic) {
+        try {
+            // Добавляем логгирование для проверки состояния openai
+            this.logger.debug('Starting generateResponse');
+            this.logger.debug(`OpenAI client: ${this.openai ? 'exists' : 'undefined'}`);
+            this.logger.debug(`OpenAI client type: ${typeof this.openai}`);
+            
+            if (!this.openai) {
+                throw new Error('OpenAI client is not initialized');
+            }
+
+            const searchInfo = topic || content.slice(0, 100);
+
+            // Получаем информацию о теме
+            const topicInfo = await this.dataFetchService.searchInfo(searchInfo, content);
+
+            // Передаем весь объект персонажа в промпт
+            const fullPrompt = `
+Character definition:
+${JSON.stringify(character, null, 2)}
+
+Context:
+${topicInfo?.summary || content}
+
+STRICT RULES:
+- Keep responses VERY short (max 10 words)
+- NO punctuation at all (no commas no dots)
+- Write like you're too lazy to use shift or punctuation
+- No introductions or explanations
+- React naturally to: "${content}"`;
+
+            // Добавляем логгирование перед вызовом API
+            this.logger.debug('Calling OpenAI API with prompt:', fullPrompt);
+            
+            const completion = await this.openai.chat.completions.create({
+                messages: [
+                    { role: "system", content: fullPrompt },
+                    { role: "user", content: content }
+                ],
+                model: "llama-3.3-70b-specdec",
+                temperature: 0.7,
+                max_tokens: 500,
+            });
+
+            this.logger.debug('OpenAI API response:', completion);
+
+            const rawResponse = completion.choices[0].message.content || '';
+            const cleanResponse = this.cleanResponse(rawResponse);
+
+            this.logger.debug(`Сгенерированный ответ: ${cleanResponse}`);
+
+            return cleanResponse;
+
+        } catch (error) {
+            this.logger.error('\n=== Error in generateResponse ===');
+            this.logger.error(`Error type: ${error.constructor.name}`);
+            this.logger.error(`Message: ${error.message}`);
+            this.logger.error(`Stack: ${error.stack}`);
+            this.logger.error('Current state:', {
+                openai: this.openai,
+                dataFetchService: this.dataFetchService,
+                character: character,
+                content: content,
+                topic: topic
+            });
+
+            throw new ResponseGenerationError(`Не удалось сгенерировать ответ: ${error.message}`);
+        }
+    }
+
+    /**
+     * Очищает ответ, удаляя пунктуацию и лишние символы.
+     * @param {string} response - Оригинальный ответ.
+     * @returns {string} - Очищенный ответ.
+     */
+    cleanResponse(response) {
+        return response
+            .replace(/[.,!?;:'"]/g, '')  // Убираем пунктуацию
+            .replace(/^"/, '')           // Убираем кавычки в начале
+            .replace(/"$/, '')           // Убираем кавычки в конце
+            .trim();
+    }
+}
+
+module.exports = ResponseGeneratorService;

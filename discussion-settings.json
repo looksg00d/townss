@@ -1,0 +1,14 @@
+{
+  "messageDelay": {
+    "min": 40,
+    "max": 120
+  },
+  "insightDelay": {
+    "min": 400,
+    "max": 600
+  },
+  "participants": {
+    "min": 4,
+    "max": 5
+  }
+}

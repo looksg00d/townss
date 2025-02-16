@@ -1,0 +1,9 @@
+[
+  {
+    "profileId": "profile1",
+    "taskType": "chat",
+    "config": {
+      "style": "cryptoGirl"
+    }
+  }
+]
