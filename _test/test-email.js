@@ -9,22 +9,33 @@ const rl = readline.createInterface({
 });
 
 async function testEmailReader() {
+    let emailReader = null;
+    
     try {
-        // Используем путь из .env
+        // Проверяем наличие переменной окружения
+        if (!process.env.TXT_PATH) {
+            throw new Error('Не задана переменная окружения TXT_PATH');
+        }
+
         const configPath = path.join(process.env.TXT_PATH, 'gmail_config.txt');
         console.log('📂 Чтение конфигурации из:', configPath);
         
         const gmailConfig = await fs.promises.readFile(configPath, 'utf8');
         const [email, password] = gmailConfig.trim().split('\n');
 
+        if (!email || !password) {
+            throw new Error('Неверный формат файла конфигурации. Требуется email и пароль, каждый на новой строке');
+        }
+
         console.log('📧 Подключение к почте...');
         console.log(`Email: ${email.trim()}`);
         console.log('Password: ********');
 
+        // Создаем экземпляр EmailReader один раз
+        emailReader = new EmailReader(email.trim(), password.trim(), 'imap.gmail.com');
+
         while (true) {
             try {
-                const emailReader = new EmailReader(email.trim(), password.trim());
-                
                 console.log('\n🔄 Ожидание нового письма с кодом...');
                 console.log('⚡ Отправьте тестовое письмо с кодом, скрипт автоматически его обнаружит');
                 console.log('❌ Для выхода нажмите Ctrl+C\n');
@@ -58,9 +69,16 @@ async function testEmailReader() {
     }
 }
 
-process.on('SIGINT', () => {
+// Добавляем корректную обработку выхода
+process.on('SIGINT', async () => {
     console.log('\n\n👋 Завершение работы скрипта...');
-    process.exit();
+    if (rl) {
+        rl.close();
+    }
+    process.exit(0);
 });
 
-testEmailReader(); 
+testEmailReader().catch(error => {
+    console.error('Необработанная ошибка:', error);
+    process.exit(1);
+}); 

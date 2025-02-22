@@ -14,6 +14,7 @@ const InsightReaderService = require('./services/r_insightreaderservice');
 const FileService = require('./services/fileservice');
 const delay = require('./services/delay');
 const ProfileManager = require('./profile-manager');
+const { getDiscussionSettings } = require('./services/discussionSettingsService');
 
 /**
  * URL чата Towns
@@ -104,6 +105,7 @@ async function uploadImages(page, images) {
 async function postMessageToTowns(profileId, content, images = []) {
     let browser;
     try {
+        const settings = await getDiscussionSettings();
         const { browser: newBrowser, page } = await runBrowser(profileId);
         browser = newBrowser;
 
@@ -129,18 +131,24 @@ async function postMessageToTowns(profileId, content, images = []) {
         await page.fill(inputSelector, content);
         
         // Ждем перед отправкой
-        const pause = 5000 + Math.random() * 5000;
-        logger.info(`Pausing for ${pause} milliseconds...`);
-        await delay(pause);
+        const preSendDelay = getRandomInt(
+            settings.messageDelay.min,
+            settings.messageDelay.max
+        );
+        logger.info(`Pausing for ${preSendDelay} milliseconds before sending...`);
+        await delay(preSendDelay);
 
         // Отправляем сообщение
         logger.info('Отправка сообщения...');
         await page.keyboard.press('Enter');
         
         // Ждем подтверждения отправки
-        const confirmPause = 5000 + Math.random() * 5000;
-        logger.info(`Pausing for ${confirmPause} milliseconds...`);
-        await delay(confirmPause);
+        const postSendDelay = getRandomInt(
+            settings.messageDelay.min,
+            settings.messageDelay.max
+        );
+        logger.info(`Pausing for ${postSendDelay} milliseconds after sending...`);
+        await delay(postSendDelay);
 
         logger.info('Сообщение успешно отправлено');
 
@@ -220,6 +228,10 @@ async function postResponseToTowns(profileId, response) {
         logger.error('Ошибка при публикации ответа:', error.message);
         throw error;
     }
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Запуск скрипта

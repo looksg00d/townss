@@ -1,3 +1,2 @@
-2025/02/16-14:20:23.706 bc8 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\Service Worker\Database/MANIFEST-000001
-2025/02/16-14:20:23.709 bc8 Recovering log #3
-2025/02/16-14:20:23.709 bc8 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\Service Worker\Database/000003.log 
+2025/02/21-22:20:55.464 1908 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\Service Worker\Database since it was missing.
+2025/02/21-22:20:55.471 1908 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\Service Worker\Database/MANIFEST-000001

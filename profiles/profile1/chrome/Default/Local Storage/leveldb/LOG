@@ -1,3 +1,5 @@
-2025/02/16-21:01:45.568 4ef8 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Storage\leveldb/MANIFEST-000001
-2025/02/16-21:01:45.572 4ef8 Recovering log #3
-2025/02/16-21:01:45.574 4ef8 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Storage\leveldb/000003.log 
+2025/02/22-21:53:06.241 17e8 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Storage\leveldb/MANIFEST-000001
+2025/02/22-21:53:06.245 17e8 Recovering log #9
+2025/02/22-21:53:06.247 17e8 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\Local Storage\leveldb/000009.log 
+2025/02/22-21:54:07.251 43a4 Level-0 table #12: started
+2025/02/22-21:54:07.268 43a4 Level-0 table #12: 18455 bytes OK

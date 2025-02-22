@@ -26,21 +26,7 @@ async function runBrowser(profileId) {
             ]
         });
 
-        const page = await browser.newPage();
-        
-        console.log('Открытие towns.com...');
-        await page.goto('https://app.towns.com/', { 
-            timeout: 60000,
-            waitUntil: 'domcontentloaded'
-        });
-
-        // Дополнительная пауза для полной загрузки
-        await page.waitForTimeout(5000);
-
-        return {
-            browser,
-            page
-        };
+        return { browser };
 
     } catch (error) {
         console.error('Ошибка при запуске браузера:', error);

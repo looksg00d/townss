@@ -1,2 +1,3 @@
-2025/02/16-12:09:43.066 5678 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\IndexedDB\chrome-extension_bhjolhheoalebgfdfoacefifmenpconm_0.indexeddb.leveldb since it was missing.
-2025/02/16-12:09:43.079 5678 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\IndexedDB\chrome-extension_bhjolhheoalebgfdfoacefifmenpconm_0.indexeddb.leveldb/MANIFEST-000001
+2025/02/22-21:50:19.208 20b4 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\IndexedDB\chrome-extension_bhjolhheoalebgfdfoacefifmenpconm_0.indexeddb.leveldb/MANIFEST-000001
+2025/02/22-21:50:19.209 20b4 Recovering log #3
+2025/02/22-21:50:19.209 20b4 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile1\chrome\Default\IndexedDB\chrome-extension_bhjolhheoalebgfdfoacefifmenpconm_0.indexeddb.leveldb/000003.log 

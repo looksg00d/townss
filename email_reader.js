@@ -8,161 +8,162 @@ class EmailReader {
         this.email = email;
         this.password = password;
         this.imap_server = imap_server;
-        this.maxAttempts = 5; // Максимальное количество попыток
+        this.maxAttempts = 5;
         this.attemptCount = 0;
+        this.lastCheckedTime = new Date();
+        this.connectionTimeout = 30000; // 30 секунд таймаут
     }
 
-    async getVerificationCode(waitTime = 60) {
-        return new Promise((resolve, reject) => {
-            try {
-                const imap = new Imap({
-                    user: this.email,
-                    password: this.password,
-                    host: this.imap_server,
-                    port: 993,
-                    tls: true,
-                    tlsOptions: { rejectUnauthorized: false }
-                });
+    async findLatestCodeEmail() {
+        let imap = null;
+        try {
+            imap = new Imap({
+                user: this.email,
+                password: this.password,
+                host: this.imap_server,
+                port: 993,
+                tls: true,
+                tlsOptions: { rejectUnauthorized: false },
+                connTimeout: this.connectionTimeout,
+                authTimeout: this.connectionTimeout
+            });
 
-                const startTime = Date.now();
-
-                // Функция для пометки всех существующих писем как прочитанных
-                const markCurrentEmailsAsRead = (callback) => {
-                    imap.openBox('INBOX', false, (err, box) => {
-                        if (err) {
-                            logger.error('Error opening mailbox:', err);
-                            return;
-                        }
-
-                        const searchCriteria = [
-                            ['OR',
-                                ['FROM', 'no-reply@mail.privy.io'],
-                                ['FROM', 'no-reply@privy.io']
-                            ],
-                            ['SUBJECT', 'Towns'],
-                            ['UNSEEN']
-                        ];
-
-                        imap.search(searchCriteria, (err, results) => {
-                            if (err) {
-                                logger.error('Error searching existing emails:', err);
-                                return;
-                            }
-
-                            if (results.length > 0) {
-                                logger.info(`Marking ${results.length} existing emails as read...`);
-                                imap.setFlags(results, ['\\Seen'], (err) => {
-                                    if (err) logger.error('Error marking emails as read:', err);
-                                    callback();
-                                });
-                            } else {
-                                callback();
-                            }
-                        });
-                    });
-                };
-
-                // Функция для проверки новых писем
-                const checkNewEmails = () => {
-                    this.attemptCount++;
-                    logger.info(`Попытка ${this.attemptCount} из ${this.maxAttempts}`);
-
-                    imap.openBox('INBOX', false, (err, box) => {
-                        if (err) {
-                            logger.error('Error opening mailbox:', err);
-                            return;
-                        }
-
-                        const searchCriteria = [
-                            ['OR',
-                                ['FROM', 'no-reply@mail.privy.io'],
-                                ['FROM', 'no-reply@privy.io']
-                            ],
-                            ['SUBJECT', 'Towns'],
-                            ['UNSEEN']
-                        ];
-
-                        logger.info('Waiting for new emails...');
-                        
-                        imap.search(searchCriteria, (err, results) => {
-                            logger.info('Search attempt:', {
-                                criteria: searchCriteria,
-                                error: err,
-                                resultsCount: results ? results.length : 0
-                            });
-
-                            if (err) {
-                                logger.error('Error searching emails:', err);
-                                return;
-                            }
-
-                            if (results.length > 0) {
-                                const fetch = imap.fetch(results, {
-                                    bodies: '',
-                                    markSeen: true
-                                });
-
-                                fetch.on('message', (msg) => {
-                                    msg.on('body', (stream) => {
-                                        simpleParser(stream, async (err, parsed) => {
-                                            if (err) {
-                                                logger.error('Error parsing email:', err);
-                                                return;
-                                            }
-
-                                            logger.info('Тема:', parsed.subject);
-                                            logger.info('От:', parsed.from.text);
-                                            logger.info('Текст письма (raw):', parsed.text);
-                                            logger.info('===================\n');
-                                            
-                                            const match = parsed.text.match(/\b\d{6}\b/);
-                                            if (match) {
-                                                logger.info('Найден код:', match[0]);
-                                                imap.end();
-                                                resolve(match[0]);
-                                                return;
-                                            } else {
-                                                logger.info('Код не найден в тексте письма!');
-                                                logger.info('Попытка поиска любых цифр:', parsed.text.match(/\d+/g));
-                                            }
-                                        });
-                                    });
-                                });
-
-                            } else if (this.attemptCount >= this.maxAttempts) {
-                                logger.info('Превышено максимальное количество попыток. Переходим к MetaMask...');
-                                imap.end();
-                                resolve('METAMASK_FALLBACK');
-                            } else if (Date.now() - startTime < waitTime * 1000) {
-                                setTimeout(checkNewEmails, 5000);
-                            } else {
-                                logger.error('Timeout waiting for verification code');
-                                imap.end();
-                                resolve(null);
-                            }
-                        });
-                    });
-                };
+            return await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Operation timed out'));
+                    this.closeConnection(imap);
+                }, this.connectionTimeout);
 
                 imap.once('ready', () => {
-                    logger.info('Connected to IMAP server');
-                    markCurrentEmailsAsRead(() => {
-                        checkNewEmails();
+                    imap.openBox('INBOX', false, (err, box) => {
+                        if (err) {
+                            logger.error('Failed to open inbox:', err);
+                            reject(err);
+                            return;
+                        }
+
+                        // Ищем только новые письма
+                        const searchCriteria = [
+                            ['SUBJECT', 'is your login code for Towns'],
+                            ['SINCE', this.lastCheckedTime.toISOString()]
+                        ];
+
+                        logger.info('Searching for new emails with criteria:', {
+                            subjectPattern: '6 digits + "is your login code for Towns"',
+                            since: this.lastCheckedTime.toISOString()
+                        });
+
+                        imap.search(searchCriteria, (err, results) => {
+                            if (err) {
+                                logger.error('Search failed:', err);
+                                reject(err);
+                                return;
+                            }
+
+                            if (!results.length) {
+                                logger.warn('No new emails found');
+                                reject(new Error('No new code emails found'));
+                                return;
+                            }
+
+                            // Берем самое новое письмо
+                            const latestEmailId = Math.max(...results);
+                            logger.info(`Found new email with ID: ${latestEmailId}`);
+
+                            const fetch = imap.fetch(latestEmailId, {
+                                bodies: '',
+                                markSeen: true
+                            });
+
+                            fetch.on('message', (msg) => {
+                                msg.on('body', (stream) => {
+                                    simpleParser(stream, (err, parsed) => {
+                                        if (err) {
+                                            logger.error('Failed to parse email:', err);
+                                            reject(err);
+                                            return;
+                                        }
+
+                                        // Проверяем, что письмо действительно новое
+                                        const emailDate = new Date(parsed.date);
+                                        if (emailDate <= this.lastCheckedTime) {
+                                            logger.warn('Found email is older than last checked time', {
+                                                emailDate: emailDate.toISOString(),
+                                                lastChecked: this.lastCheckedTime.toISOString()
+                                            });
+                                            reject(new Error('No new code emails found'));
+                                            return;
+                                        }
+
+                                        logger.info('Found new email:', {
+                                            from: parsed.from.text,
+                                            subject: parsed.subject,
+                                            date: emailDate.toISOString(),
+                                            receivedDate: new Date().toISOString()
+                                        });
+
+                                        const codeMatch = parsed.subject.match(/^(\d{6})\s+is your login code for Towns/);
+                                        if (codeMatch) {
+                                            const code = codeMatch[1];
+                                            logger.info(`Found new valid login code: ${code}`, {
+                                                fullSubject: parsed.subject,
+                                                emailDate: emailDate.toISOString()
+                                            });
+
+                                            // Обновляем время последней проверки
+                                            this.lastCheckedTime = emailDate;
+
+                                            resolve({
+                                                code,
+                                                emailDetails: {
+                                                    from: parsed.from.text,
+                                                    subject: parsed.subject,
+                                                    date: emailDate,
+                                                    id: latestEmailId
+                                                }
+                                            });
+                                        } else {
+                                            logger.warn('New email does not match expected format:', {
+                                                subject: parsed.subject
+                                            });
+                                            reject(new Error('Invalid email format'));
+                                        }
+                                    });
+                                });
+                            });
+
+                            fetch.once('error', (err) => {
+                                logger.error('Fetch error:', err);
+                                reject(err);
+                            });
+
+                            fetch.once('end', () => {
+                                logger.info('Fetch completed');
+                                imap.end();
+                            });
+                        });
                     });
                 });
 
                 imap.once('error', (err) => {
-                    logger.error('IMAP error:', err);
+                    clearTimeout(timeout);
+                    logger.error('IMAP connection error:', err);
                     reject(err);
                 });
 
-                imap.connect();
+                imap.once('end', () => {
+                    clearTimeout(timeout);
+                    logger.info('IMAP connection ended');
+                });
 
-            } catch (error) {
-                logger.error('Error reading email:', error);
-                reject(error);
-            }
-        });
+                imap.connect();
+            });
+        } catch (error) {
+            logger.error('Error in findLatestCodeEmail:', error);
+            throw error;
+        } finally {
+            await this.closeConnection(imap);
+        }
     }
 
     async fetchMessage(imap, msgId) {
@@ -202,8 +203,112 @@ class EmailReader {
         });
     }
 
-    async clearOldEmails() {
-        // ... код для удаления старых писем ...
+    async clearOldEmails(daysOld = 1) {
+        let imap = null;
+        try {
+            imap = new Imap({
+                user: this.email,
+                password: this.password,
+                host: this.imap_server,
+                port: 993,
+                tls: true,
+                tlsOptions: { rejectUnauthorized: false }
+            });
+
+            await new Promise((resolve, reject) => {
+                imap.once('ready', () => {
+                    imap.openBox('INBOX', false, (err, box) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+
+                        const date = new Date();
+                        date.setDate(date.getDate() - daysOld);
+                        
+                        const searchCriteria = [
+                            ['SUBJECT', 'is your login code for Towns'],
+                            ['BEFORE', date]
+                        ];
+
+                        imap.search(searchCriteria, (err, results) => {
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+
+                            if (!results.length) {
+                                logger.info('No old emails to delete');
+                                resolve();
+                                return;
+                            }
+
+                            imap.addFlags(results, '\\Deleted', (err) => {
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                
+                                logger.info(`Deleted ${results.length} old emails`);
+                                resolve();
+                            });
+                        });
+                    });
+                });
+
+                imap.once('error', reject);
+                imap.connect();
+            });
+        } catch (error) {
+            logger.error('Error in clearOldEmails:', error);
+            throw error;
+        } finally {
+            await this.closeConnection(imap);
+        }
+    }
+
+    async closeConnection(imap) {
+        return new Promise((resolve) => {
+            if (imap && imap.state !== 'disconnected') {
+                imap.once('end', () => {
+                    logger.info('IMAP connection ended');
+                    resolve();
+                });
+                imap.end();
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    async getVerificationCode(maxWaitTime = 60000) {
+        const startTime = Date.now();
+        let lastError = null;
+
+        while (Date.now() - startTime < maxWaitTime) {
+            try {
+                const result = await this.findLatestCodeEmail();
+                if (result && result.code) {
+                    return result.code;
+                }
+            } catch (error) {
+                lastError = error;
+                logger.warn('Attempt to get verification code failed:', error.message);
+                
+                // Если ошибка не связана с отсутствием писем, пробрасываем её выше
+                if (error.message !== 'No new code emails found') {
+                    throw error;
+                }
+                
+                // Ждем 5 секунд перед следующей попыткой
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+        }
+
+        throw new Error(lastError ? 
+            `Timeout waiting for verification code: ${lastError.message}` : 
+            'Timeout waiting for verification code'
+        );
     }
 }
 

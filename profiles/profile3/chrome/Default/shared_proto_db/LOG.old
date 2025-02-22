@@ -1,3 +1,2 @@
-2025/02/16-14:20:24.012 f74 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\shared_proto_db/MANIFEST-000001
-2025/02/16-14:20:24.012 f74 Recovering log #3
-2025/02/16-14:20:24.013 f74 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\shared_proto_db/000003.log 
+2025/02/21-22:20:55.416 3464 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\shared_proto_db since it was missing.
+2025/02/21-22:20:55.430 3464 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile3\chrome\Default\shared_proto_db/MANIFEST-000001

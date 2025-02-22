@@ -1,24 +1,33 @@
-2025/02/16-14:37:46.313 17d0 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm since it was missing.
-2025/02/16-14:37:46.329 17d0 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
-2025/02/16-14:38:07.842 d74 Level-0 table #5: started
-2025/02/16-14:38:07.857 d74 Level-0 table #5: 1932295 bytes OK
-2025/02/16-14:38:07.861 d74 Delete type=0 #3
-2025/02/16-14:38:25.169 d74 Level-0 table #7: started
-2025/02/16-14:38:25.232 d74 Level-0 table #7: 12680418 bytes OK
-2025/02/16-14:38:25.234 d74 Delete type=0 #4
-2025/02/16-14:38:25.236 17d0 Compacting 1@1 + 1@2 files
-2025/02/16-14:38:25.314 17d0 Generated table #8@1: 1 keys, 11572360 bytes
-2025/02/16-14:38:25.326 17d0 Generated table #9@1: 1 keys, 133 bytes
-2025/02/16-14:38:25.326 17d0 Compacted 1@1 + 1@2 files => 11572493 bytes
-2025/02/16-14:38:25.327 17d0 compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/02/16-14:38:25.327 17d0 Delete type=2 #5
-2025/02/16-14:38:25.327 17d0 Delete type=2 #7
-2025/02/16-14:38:33.598 d74 Level-0 table #11: started
-2025/02/16-14:38:33.666 d74 Level-0 table #11: 11572360 bytes OK
-2025/02/16-14:38:33.669 d74 Delete type=0 #6
-2025/02/16-14:38:33.671 d74 Compacting 1@1 + 1@2 files
-2025/02/16-14:38:33.768 d74 Generated table #12@1: 1 keys, 11572360 bytes
-2025/02/16-14:38:33.771 d74 Compacted 1@1 + 1@2 files => 11572360 bytes
-2025/02/16-14:38:33.772 d74 compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/02/16-14:38:33.772 d74 Delete type=2 #8
-2025/02/16-14:38:33.772 d74 Delete type=2 #11
+2025/02/21-22:19:09.945 47b4 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm since it was missing.
+2025/02/21-22:19:09.956 47b4 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
+2025/02/21-22:19:43.073 3ff4 Level-0 table #5: started
+2025/02/21-22:19:43.132 3ff4 Level-0 table #5: 13042332 bytes OK
+2025/02/21-22:19:43.134 3ff4 Delete type=0 #3
+2025/02/21-22:19:58.601 30e0 Level-0 table #7: started
+2025/02/21-22:19:58.656 30e0 Level-0 table #7: 11786691 bytes OK
+2025/02/21-22:19:58.659 30e0 Delete type=0 #4
+2025/02/21-22:19:58.660 30e0 Compacting 1@1 + 1@2 files
+2025/02/21-22:19:58.747 30e0 Generated table #8@1: 1 keys, 11786691 bytes
+2025/02/21-22:19:58.752 30e0 Generated table #9@1: 1 keys, 133 bytes
+2025/02/21-22:19:58.752 30e0 Compacted 1@1 + 1@2 files => 11786824 bytes
+2025/02/21-22:19:58.753 30e0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/21-22:19:58.754 30e0 Delete type=2 #5
+2025/02/21-22:19:58.754 30e0 Delete type=2 #7
+2025/02/21-22:20:07.533 30e0 Level-0 table #11: started
+2025/02/21-22:20:07.598 30e0 Level-0 table #11: 11786687 bytes OK
+2025/02/21-22:20:07.602 30e0 Delete type=0 #6
+2025/02/21-22:20:07.605 30e0 Compacting 1@1 + 1@2 files
+2025/02/21-22:20:07.710 30e0 Generated table #12@1: 1 keys, 11786687 bytes
+2025/02/21-22:20:07.712 30e0 Compacted 1@1 + 1@2 files => 11786687 bytes
+2025/02/21-22:20:07.713 30e0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/21-22:20:07.713 30e0 Delete type=2 #8
+2025/02/21-22:20:07.714 30e0 Delete type=2 #11
+2025/02/21-22:20:37.534 30e0 Level-0 table #14: started
+2025/02/21-22:20:37.591 30e0 Level-0 table #14: 11786687 bytes OK
+2025/02/21-22:20:37.594 30e0 Delete type=0 #10
+2025/02/21-22:20:37.596 30e0 Compacting 1@1 + 1@2 files
+2025/02/21-22:20:37.679 30e0 Generated table #15@1: 1 keys, 11786687 bytes
+2025/02/21-22:20:37.681 30e0 Compacted 1@1 + 1@2 files => 11786687 bytes
+2025/02/21-22:20:37.682 30e0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/02/21-22:20:37.682 30e0 Delete type=2 #12
+2025/02/21-22:20:37.682 30e0 Delete type=2 #14

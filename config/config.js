@@ -4,9 +4,8 @@ const fs = require('fs');
 // Функция для загрузки .env файла
 function loadEnvVariables() {
     const possiblePaths = [
-        path.join(__dirname, '.env'),
-        path.join(__dirname, '..', '.env'),
-        path.resolve(process.cwd(), '.env')
+        path.join(__dirname, '..', '..', '.env'),
+        path.resolve(process.cwd(), '..', '.env'),
     ];
 
     console.log('Looking for .env file in:');
@@ -60,11 +59,6 @@ const config = {
     },
     logging: {
         level: process.env.LOG_LEVEL || 'warn',
-    },
-    discussion: {
-        maxMessages: parseInt(process.env.DISCUSSION_MAX_MESSAGES, 10) || 10,
-        messageDelay: parseInt(process.env.DISCUSSION_MESSAGE_DELAY, 10) || 1000,
-        defaultTopic: process.env.DISCUSSION_DEFAULT_TOPIC || 'Обсуждение технологий',
     },
     paths: {
         alphaInsightsDir: process.env.ALPHA_INSIGHTS_DIR ? path.resolve(process.env.ALPHA_INSIGHTS_DIR) : null,

@@ -380,7 +380,43 @@ async function main(profileId) {
 
         // Нажимаем кнопку Email
         logger.info('Выбор входа через Email...');
-        await townsPage.locator('xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/button[4]').click();
+        const emailButtonSelectors = [
+            'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/div[2]/button',
+            'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/button[4]'
+        ];
+
+        let selectedEmailInputSelector = '';
+        let selectedSubmitButtonSelector = '';
+        let emailButtonClicked = false;
+
+        for (const selector of emailButtonSelectors) {
+            try {
+                const isVisible = await townsPage.waitForSelector(selector, { 
+                    state: 'visible',
+                    timeout: 5000 
+                });
+                if (isVisible) {
+                    await townsPage.locator(selector).click();
+                    emailButtonClicked = true;
+                    // Устанавливаем соответствующие селекторы
+                    if (selector === 'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/div[2]/button') {
+                        selectedEmailInputSelector = 'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/div[1]/div/label/input';
+                        selectedSubmitButtonSelector = 'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[3]/div/div[1]/div/label/button';
+                    } else {
+                        selectedEmailInputSelector = 'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div[3]/div/label/input';
+                        selectedSubmitButtonSelector = 'xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div[3]/div/label/button';
+                    }
+                    break;
+                }
+            } catch (error) {
+                logger.info(`Кнопка ${selector} не найдена, пробуем следующий селектор...`);
+            }
+        }
+
+        if (!emailButtonClicked) {
+            throw new Error('Не удалось найти и нажать кнопку входа через Email');
+        }
+
         await waitForPageReady(townsPage);
 
         logger.info('Попытка входа через email...');
@@ -395,16 +431,15 @@ async function main(profileId) {
 
         // Затем отправляем email...
         logger.info('Ввод iCloud email адреса...');
-        await townsPage.locator('xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div[3]/div/label/input')
-            .fill(profile.icloudEmail);
+        await townsPage.locator(selectedEmailInputSelector).fill(profile.icloudEmail);
 
         // Нажимаем кнопку Submit
         logger.info('Отправка email...');
-        await townsPage.locator('xpath=/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div/div[3]/div/label/button').click();
+        await townsPage.locator(selectedSubmitButtonSelector).click();
 
         // Ждем немного чтобы письмо точно успело прийти
         logger.info('Ожидание отправки письма...');
-        await townsPage.waitForTimeout(3000);
+        await townsPage.waitForTimeout(10000);
 
         // Получаем код из email
         logger.info('Чтение кода из email...');

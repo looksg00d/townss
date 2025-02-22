@@ -6,16 +6,14 @@ class ResponseGeneratorService {
     /**
      * @param {Object} dependencies - Объект зависимостей.
      * @param {OpenAI} dependencies.openAI - Клиент OpenAI.
-     * @param {DataFetchService} dependencies.dataFetchService - Сервис для получения дополнительной информации.
      * @param {Object} dependencies.logger - Система логирования.
      */
-    constructor({ openAI, dataFetchService, logger, config }) {
+    constructor({ openAI, logger, config }) {
         this.logger = logger || require('./logger').withLabel('ResponseGeneratorService');
         this.logger.debug('Initializing ResponseGeneratorService');
         this.logger.debug('OpenAI client:', openAI);
         
         this.openai = openAI;
-        this.dataFetchService = dataFetchService;
         this.config = config;
         
         if (!this.openai) {
@@ -31,7 +29,7 @@ class ResponseGeneratorService {
      * @returns {Promise<string>} - Сгенерированный ответ.
      * @throws {ResponseGenerationError} - Если произошла ошибка при генерации ответа.
      */
-    async generateResponse(character, content, topic) {
+    async generateResponse(character, content) {
         try {
             // Добавляем логгирование для проверки состояния openai
             this.logger.debug('Starting generateResponse');
@@ -41,22 +39,12 @@ class ResponseGeneratorService {
             if (!this.openai) {
                 throw new Error('OpenAI client is not initialized');
             }
-
-            const searchInfo = topic || content.slice(0, 100);
-
-            // Получаем информацию о теме
-            const topicInfo = await this.dataFetchService.searchInfo(searchInfo, content);
-
             // Передаем весь объект персонажа в промпт
             const fullPrompt = `
 Character definition:
 ${JSON.stringify(character, null, 2)}
 
-Context:
-${topicInfo?.summary || content}
-
 STRICT RULES:
-- Keep responses VERY short (max 10 words)
 - NO punctuation at all (no commas no dots)
 - Write like you're too lazy to use shift or punctuation
 - No introductions or explanations
@@ -72,7 +60,7 @@ STRICT RULES:
                 ],
                 model: "llama-3.3-70b-specdec",
                 temperature: 0.7,
-                max_tokens: 500,
+                max_tokens: 50,
             });
 
             this.logger.debug('OpenAI API response:', completion);
@@ -91,10 +79,8 @@ STRICT RULES:
             this.logger.error(`Stack: ${error.stack}`);
             this.logger.error('Current state:', {
                 openai: this.openai,
-                dataFetchService: this.dataFetchService,
                 character: character,
-                content: content,
-                topic: topic
+                content: content
             });
 
             throw new ResponseGenerationError(`Не удалось сгенерировать ответ: ${error.message}`);

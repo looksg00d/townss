@@ -83,81 +83,86 @@ async function handleTownsLogin(page, profile, profileId) {
     const loginButton = page.locator(`xpath=${loginSelector}`);
     await loginButton.click();
     
-    // Переходим сразу на страницу профиля, игнорируя перенаправление
-    await page.goto('https://app.towns.com/?panel=profile&stackId=main&profileId=me', {
-      waitUntil: 'networkidle',
-      timeout: 30000
-    });
-
-    // Ждем загрузки страницы
-    await page.waitForTimeout(3000);
-
-    // Проверяем, не произошло ли перенаправление
-    const currentUrl = page.url();
-    if (currentUrl.includes('/channels/')) {
-      console.log('Обнаружено перенаправление, переходим к профилю...');
+    // Пробуем первый вариант - прямой переход на страницу профиля
+    try {
+      console.log('Пробуем прямой переход на страницу профиля...');
       await page.goto('https://app.towns.com/?panel=profile&stackId=main&profileId=me', {
         waitUntil: 'networkidle',
-        timeout: 30000
+        timeout: 15000
       });
-    }
-    
-    // Копирование данных
-    const copyButtonSelector = '/html/body/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div';
-    
-    // Ждем появления кнопки и кликаем
-    await page.waitForSelector(`xpath=${copyButtonSelector}`, { timeout: 10000 });
-    
-    // Пробуем разные способы клика
-    try {
-        // 1. Сначала через JavaScript
+
+      await page.waitForTimeout(3000);
+
+      // Пробуем найти и нажать кнопку копирования
+      const copyButtonSelector = '/html/body/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div';
+      await page.waitForSelector(`xpath=${copyButtonSelector}`, { timeout: 10000 });
+      
+      try {
+        // Пробуем разные способы клика
         await page.evaluate((selector) => {
-            const element = document.evaluate(
-                selector,
-                document,
-                null,
-                XPathResult.FIRST_ORDERED_NODE_TYPE,
-                null
-            ).singleNodeValue;
-            if (element) {
-                element.click();
-            }
+          const element = document.evaluate(
+            selector,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+          ).singleNodeValue;
+          if (element) element.click();
         }, copyButtonSelector);
         
-        // 2. Если не сработало, пробуем через dispatchEvent
         await page.evaluate((selector) => {
-            const element = document.evaluate(
-                selector,
-                document,
-                null,
-                XPathResult.FIRST_ORDERED_NODE_TYPE,
-                null
-            ).singleNodeValue;
-            if (element) {
-                element.dispatchEvent(new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                }));
-            }
+          const element = document.evaluate(
+            selector,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+          ).singleNodeValue;
+          if (element) {
+            element.dispatchEvent(new MouseEvent('click', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            }));
+          }
         }, copyButtonSelector);
         
-        // 3. Если и это не сработало, используем Playwright click
         const copyButton = page.locator(`xpath=${copyButtonSelector}`);
         await copyButton.click({
-            force: true,
-            timeout: 5000,
-            delay: 100,
-            button: 'left',
-            clickCount: 1
+          force: true,
+          timeout: 5000,
+          delay: 1000,
+          button: 'left',
+          clickCount: 1
         });
-        
-    } catch (e) {
-        console.log('Ошибка при клике:', e);
+      } catch (e) {
+        console.log('Ошибка при клике на странице профиля:', e);
+        throw new Error('Не удалось скопировать адрес со страницы профиля');
+      }
+
+    } catch (error) {
+      // Если первый вариант не сработал, пробуем второй вариант через меню
+      console.log('Прямой переход не удался, пробуем альтернативный путь через меню...');
+      
+      // Нажимаем на кнопку профиля в меню
+      const menuButtonXPath = '/html/body/div/div[1]/div/div[1]/div/div[4]/div[4]/div/div/div/div';
+      await page.waitForSelector(`xpath=${menuButtonXPath}`, { 
+        timeout: 10000,
+        state: 'visible'
+      });
+      await page.click(`xpath=${menuButtonXPath}`);
+      
+      // Ждем появления и нажимаем кнопку копирования адреса
+      const copyButtonXPath = '/html/body/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div[3]/button[3]';
+      await page.waitForSelector(`xpath=${copyButtonXPath}`, {
+        timeout: 10000,
+        state: 'visible'
+      });
+      await page.click(`xpath=${copyButtonXPath}`);
     }
-    
+
     // Даем время на копирование
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     
     // Читаем из буфера обмена
     const clipboardText = ncp.paste();
@@ -168,7 +173,7 @@ async function handleTownsLogin(page, profile, profileId) {
     console.log('Очищенный адрес:', address);
     
     if (!address.startsWith('0x')) {
-        throw new Error('Некорректный адрес в буфере обмена');
+      throw new Error('Некорректный адрес в буфере обмена');
     }
     
     // Отправляем транзакцию

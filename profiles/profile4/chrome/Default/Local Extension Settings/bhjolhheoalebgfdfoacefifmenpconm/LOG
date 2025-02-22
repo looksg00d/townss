@@ -1,24 +1,5 @@
-2025/02/16-14:22:01.325 4edc Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile4\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm since it was missing.
-2025/02/16-14:22:01.332 4edc Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile4\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
-2025/02/16-14:22:50.829 6c8 Level-0 table #5: started
-2025/02/16-14:22:50.908 6c8 Level-0 table #5: 12967258 bytes OK
-2025/02/16-14:22:50.920 6c8 Delete type=0 #3
-2025/02/16-14:22:59.003 36a4 Level-0 table #7: started
-2025/02/16-14:22:59.057 36a4 Level-0 table #7: 11738917 bytes OK
-2025/02/16-14:22:59.060 36a4 Delete type=0 #4
-2025/02/16-14:22:59.061 36a4 Compacting 1@1 + 1@2 files
-2025/02/16-14:22:59.150 36a4 Generated table #8@1: 1 keys, 11738917 bytes
-2025/02/16-14:22:59.155 36a4 Generated table #9@1: 1 keys, 133 bytes
-2025/02/16-14:22:59.155 36a4 Compacted 1@1 + 1@2 files => 11739050 bytes
-2025/02/16-14:22:59.156 36a4 compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/02/16-14:22:59.157 36a4 Delete type=2 #5
-2025/02/16-14:22:59.157 36a4 Delete type=2 #7
-2025/02/16-14:23:28.962 36a4 Level-0 table #11: started
-2025/02/16-14:23:29.026 36a4 Level-0 table #11: 11738917 bytes OK
-2025/02/16-14:23:29.038 36a4 Delete type=0 #6
-2025/02/16-14:23:29.040 4edc Compacting 1@1 + 1@2 files
-2025/02/16-14:23:29.116 4edc Generated table #12@1: 1 keys, 11738917 bytes
-2025/02/16-14:23:29.117 4edc Compacted 1@1 + 1@2 files => 11738917 bytes
-2025/02/16-14:23:29.118 4edc compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/02/16-14:23:29.119 4edc Delete type=2 #8
-2025/02/16-14:23:29.119 4edc Delete type=2 #11
+2025/02/22-13:50:29.903 3310 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile4\chrome\Default\Local Extension Settings\bhjolhheoalebgfdfoacefifmenpconm/MANIFEST-000001
+2025/02/22-13:50:29.903 3310 Recovering log #10
+2025/02/22-13:50:29.962 3310 Level-0 table #14: started
+2025/02/22-13:50:30.017 3310 Level-0 table #14: 11809007 bytes OK
+2025/02/22-13:50:30.022 3310 Delete type=0 #10

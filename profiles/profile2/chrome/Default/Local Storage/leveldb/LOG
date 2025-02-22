@@ -1,3 +1,2 @@
-2025/02/16-14:37:44.669 844 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Storage\leveldb/MANIFEST-000001
-2025/02/16-14:37:44.673 844 Recovering log #3
-2025/02/16-14:37:44.675 844 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Storage\leveldb/000003.log 
+2025/02/21-22:19:08.255 4120 Creating DB C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Storage\leveldb since it was missing.
+2025/02/21-22:19:08.270 4120 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile2\chrome\Default\Local Storage\leveldb/MANIFEST-000001

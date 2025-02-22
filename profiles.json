@@ -12,7 +12,7 @@
     "icloudEmail": "nailchiksam@gmail.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/121.0.6167.160 Safari/537.36",
-    "character": "CHAT_GRINDER"
+    "character": "ALPHA_INSIDER"
   },
   "profile2": {
     "profileId": "profile2",
@@ -27,7 +27,7 @@
     "icloudEmail": "winless_tepee.0n@icloud.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/121.0.0.0",
-    "character": "RETRO_MAN"
+    "character": "DEFI_DEV"
   },
   "profile3": {
     "profileId": "profile3",
@@ -42,7 +42,7 @@
     "icloudEmail": "juicy.cockles-0f@icloud.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0",
-    "character": "MEV_DEV"
+    "character": "CHAT_GRINDER"
   },
   "profile4": {
     "profileId": "profile4",
@@ -72,7 +72,7 @@
     "icloudEmail": "calmer.signage.0m@icloud.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.111 Safari/537.36",
-    "character": "ALPHA_INSIDER"
+    "character": "CRYPTO_INSIDER"
   },
   "profile6": {
     "profileId": "profile6",
@@ -87,7 +87,7 @@
     "icloudEmail": "matting.cravens0j@icloud.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.65 Safari/537.36",
-    "character": "MEV_DEV"
+    "character": "CRYPTO_OG"
   },
   "profile7": {
     "profileId": "profile7",
@@ -102,6 +102,36 @@
     "icloudEmail": "residue_bungles0w@icloud.com",
     "proxy": "direct",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.41 Safari/537.36",
-    "character": "CRYPTO_INSIDER"
+    "character": "CRYPTO_GIRL"
+  },
+  "profile8": {
+    "profileId": "profile8",
+    "name": "Профиль 8",
+    "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile8\\chrome",
+    "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile8\\auth.json",
+    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
+    "metamaskSeed": "common huge crater people spice acquire goose cattle rich hire feel regular",
+    "metamaskPassword": "11111111",
+    "email": "nailchiksam@gmail.com",
+    "emailPassword": "kmxgkywnznoxkmqj",
+    "icloudEmail": "skids.scrolls0p@icloud.com",
+    "proxy": "direct",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.66 Safari/537.36",
+    "character": "RETRO_MAN"
+  },
+  "profile9": {
+    "profileId": "profile9",
+    "name": "Профиль 9",
+    "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile9\\chrome",
+    "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile9\\auth.json",
+    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
+    "metamaskSeed": "common huge crater people spice acquire goose cattle rich hire feel regular",
+    "metamaskPassword": "11111111",
+    "email": "nailchiksam@gmail.com",
+    "emailPassword": "kmxgkywnznoxkmqj",
+    "icloudEmail": "spectra_nicks0z@icloud.com",
+    "proxy": "direct",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36",
+    "character": "MEV_DEV"
   }
 }

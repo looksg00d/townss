@@ -1,8 +1,0 @@
-2025/02/16-19:21:28.460 42d0 Reusing MANIFEST C:\Users\User\Desktop\wwww\towns\profiles\profile5\chrome\Default\Local Storage\leveldb/MANIFEST-000001
-2025/02/16-19:21:28.463 42d0 Recovering log #3
-2025/02/16-19:21:28.463 42d0 Level-0 table #3: started
-2025/02/16-19:21:28.468 42d0 Level-0 table #3: 19995 bytes OK
-2025/02/16-19:21:28.468 42d0 Recovering log #4
-2025/02/16-19:21:28.470 42d0 Reusing old log C:\Users\User\Desktop\wwww\towns\profiles\profile5\chrome\Default\Local Storage\leveldb/000004.log 
-2025/02/16-19:21:28.471 42d0 Delete type=0 #3
-2025/02/16-19:21:28.471 42d0 Delete type=2 #5
