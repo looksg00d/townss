@@ -7,7 +7,7 @@ class InsightGenerator {
     this.openai = openai;
     this.logger = logger;
     this.model = model || "mixtral-8x7b-32768";
-    this.cryptoINSIDER = require('../characters/cryptoINSIDER.json');
+    this.cryptoINSIDER = require('../characters/CRYPTO_INSIDER.json');
   }
 
 
@@ -29,7 +29,7 @@ class InsightGenerator {
 ${JSON.stringify(this.cryptoINSIDER, null, 2)}
 
 Additional rules:
-- Write in English only
+- Write only in English
 - Start directly with the main information
 - No introductory phrases like "It looks like" or "I see that"
 - Be concise and direct

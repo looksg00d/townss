@@ -1,20 +1,24 @@
 require('dotenv').config(); // Загружаем переменные окружения
 const path = require('path');
 const stringSimilarity = require('string-similarity');
+const { selectAndSendGif, generateRandomString } = require('./gif-response');
+// Новый вариант parseArgs:
 const parseArgs = () => {
     const args = process.argv.slice(2);
     const params = {};
     
-    for (let i = 0; i < args.length; i += 2) {
-        const key = args[i].replace('--', '');
-        const value = args[i + 1];
-        try {
-            params[key] = JSON.parse(value);
-        } catch {
-            params[key] = value;
+    for (let i = 0; i < args.length; i++) {
+        if (args[i].startsWith('--')) {
+            const key = args[i].replace('--', '');
+            const value = args[i + 1] || null; // следующий аргумент – значение (или null, если его нет)
+            try {
+                params[key] = JSON.parse(value);
+            } catch {
+                params[key] = value;
+            }
+            i++; // пропускаем значение, т.к. оно уже использовано
         }
     }
-    
     return params;
 };
 
@@ -80,6 +84,9 @@ const { loadProfiles } = require('./profiles');
 const FileService = require('./services/fileservice');
 
 const { getDiscussionSettings } = require('./services/discussionSettingsService');
+
+// Импортируем функции из post-insight.js
+const { postInsightToTowns, postResponseToTowns } = require('./post-insight');
 
 const args = process.argv.slice(2);
 const profiles = args.length > 0 ? args : null;
@@ -190,12 +197,17 @@ async function fetchInsight(services, insightId) {
 }
 
 /**
- * Publishes the insight from the main character.
+ * Публикует инсайт от главного персонажа.
  * @param {Object} services - An object containing initialized services.
  * @param {Object} profiles - Loaded profiles.
  * @param {Object} insight - The insight to publish.
+ * @param {string} chatUrl - URL чата для публикации (обязательно)
  */
-async function publishInsight(services, profiles, insight) {
+async function publishInsight(services, profiles, insight, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     // Находим профиль с ролью ALPHA_INSIDER
     const mainCharacter = services.characterService.getMainCharacter();
     const mainProfile = Object.entries(profiles).find(([_, profile]) => 
@@ -211,7 +223,8 @@ async function publishInsight(services, profiles, insight) {
     logger.info(`Publishing insight using profile ${mainProfileId} (${mainCharacter.username})`);
 
     try {
-        await services.publicationService.publishInsight(mainProfileId, insight.postId, insight.content);
+        // Используем postInsightToTowns с указанным URL чата
+        await postInsightToTowns(mainProfileId, insight.postId, chatUrl);
         logger.info(`Insight published by ${mainProfileId}`);
     } catch (error) {
         logger.error(`Failed to publish insight: ${error.message}`);
@@ -234,9 +247,27 @@ function shuffleArray(array) {
 }
 
 /**
- * Generates and publishes responses from participants.
+ * Determines if a message should be a reply based on probability
+ * @param {number} probability - Probability of replying (0-1)
+ * @returns {boolean} True if should reply, false otherwise
  */
-async function generateAndPublishResponses(services, profiles, settings, insight) {
+function shouldReplyToMessage(probability = 0.3) {
+    return Math.random() < probability;
+}
+
+/**
+ * Generates and publishes responses from participants.
+ * @param {Object} services - Services for the discussion
+ * @param {Object} profiles - Profiles to use
+ * @param {Object} settings - Discussion settings
+ * @param {Object} insight - The insight to respond to
+ * @param {string} chatUrl - URL чата для публикации (обязательно)
+ */
+async function generateAndPublishResponses(services, profiles, settings, insight, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     // Исключаем главного персонажа из списка отвечающих
     const mainCharacter = services.characterService.getMainCharacter();
     const responders = Object.entries(profiles).filter(([_, profile]) => 
@@ -249,24 +280,127 @@ async function generateAndPublishResponses(services, profiles, settings, insight
 
     logger.info(`Selected ${selectedResponders.length} responders for discussion`);
 
+    // Массив для хранения опубликованных сообщений (для возможности ответа на них)
+    const publishedMessages = [];
+
     for (const [profileId, profile] of selectedResponders) {
         try {
-            const response = await services.responseGenerator.generateResponse(
-                profile.characterObj,
-                insight.content
-            );
-
-            await services.publicationService.publishResponse(profileId, response);
-            logger.info(`Response published by ${profileId}`);
-
-            // Пауза между ответами
+            // Определяем, будет ли это ответом на другое сообщение
+            const shouldReply = publishedMessages.length > 0 && shouldReplyToMessage();
+            
+            // Выбираем случайное сообщение для ответа, если нужно
+            const messageToReplyTo = shouldReply 
+                ? publishedMessages[Math.floor(Math.random() * publishedMessages.length)]
+                : null;
+            
+            // Логируем информацию о типе сообщения
+            if (shouldReply) {
+                logger.info(`Profile ${profileId} will reply to message from ${messageToReplyTo.profileId}`);
+            } else {
+                logger.info(`Profile ${profileId} will post a new message`);
+            }
+            
+            // Определяем, будет ли это гифка или текст
+            const shouldSendGif = Math.random() < 0.2; // 20% вероятность отправки гифки
+            
+            if (shouldSendGif) {
+                logger.info(`Profile ${profileId} will send a GIF response`);
+                // Используем generateRandomString для генерации случайного запроса
+                const searchQuery = generateRandomString();
+                logger.info(`Using search query for GIF: ${searchQuery}`);
+                
+                // Отправляем гифку (как новое сообщение или как ответ)
+                const messageId = await selectAndSendGif(profileId, chatUrl, messageToReplyTo);
+                
+                // Добавляем информацию о сообщении в массив опубликованных
+                publishedMessages.push({
+                    profileId,
+                    messageId,
+                    type: 'gif'
+                });
+            } else {
+                // Генерируем текстовый ответ
+                let responsePrompt = insight.content;
+                
+                // Если это ответ на другое сообщение, модифицируем промпт
+                if (shouldReply && messageToReplyTo) {
+                    // Получаем профиль автора сообщения, на которое отвечаем
+                    const replyToProfile = profiles[messageToReplyTo.profileId];
+                    const replyToName = replyToProfile ? replyToProfile.name || 'another user' : 'another user';
+                    
+                    // Создаем промпт для ответа на сообщение
+                    responsePrompt = `You are replying to a message from ${replyToName} who said: "${messageToReplyTo.content}". 
+                    Your response should directly address their points, either supporting or challenging their view. 
+                    Original discussion topic: ${insight.content}`;
+                }
+                
+                const response = await services.responseGenerator.generateResponse(
+                    profile.characterObj,
+                    responsePrompt
+                );
+                
+                // Публикуем ответ (как новое сообщение или как ответ на другое)
+                const messageId = await postResponseToTowns(profileId, response, chatUrl, messageToReplyTo);
+                
+                // Добавляем информацию о сообщении в массив опубликованных
+                publishedMessages.push({
+                    profileId,
+                    messageId,
+                    content: response,
+                    type: 'text'
+                });
+                
+                logger.info(`Text response published by ${profileId}${shouldReply ? ' as a reply' : ''}`);
+            }
+            
+            // Добавляем реакцию с вероятностью 50% под главным постом
+            if (Math.random() < 0.5) {
+                try {
+                    // Здесь нужно реализовать функцию для добавления реакции
+                    // await addReactionToPost(profileId, chatUrl);
+                    logger.info(`Profile ${profileId} added a reaction to the main post`);
+                } catch (reactionError) {
+                    logger.error(`Error adding reaction for ${profileId}:`, reactionError);
+                }
+            }
+            
+            // Задержка между ответами
             const messageDelay = getRandomDelay(settings.messageDelay);
-            logger.info(`Waiting ${messageDelay}ms before next response`);
             await delay(messageDelay);
-
         } catch (error) {
             logger.error(`Error generating response for ${profileId}:`, error);
         }
+    }
+}
+
+/**
+ * Добавьте эту функцию для удаления инсайта после использования
+ * @param {number} insightId - The ID of the insight to delete.
+ */
+async function deleteInsightAfterUse(insightId) {
+    try {
+        if (!insightId) {
+            logger.warn('No insight ID provided for deletion');
+            return;
+        }
+        
+        const fs = require('fs').promises;
+        const path = require('path');
+        const insightPath = path.join(__dirname, 'data', 'insights', `${insightId}.json`);
+        
+        // Проверяем существование файла
+        try {
+            await fs.access(insightPath);
+        } catch (error) {
+            logger.warn(`Insight file ${insightId} not found for deletion`);
+            return;
+        }
+        
+        // Удаляем файл
+        await fs.unlink(insightPath);
+        logger.info(`Insight ${insightId} deleted successfully after use`);
+    } catch (error) {
+        logger.error(`Error deleting insight ${insightId}:`, error);
     }
 }
 
@@ -285,6 +419,11 @@ async function runDiscussion(insightId) {
 
         await publishInsight(services, profiles, insight);
         await generateAndPublishResponses(services, profiles, settings, insight);
+
+        // После успешной публикации дискуссии удаляем инсайт
+        if (insight && insight.id) {
+            await deleteInsightAfterUse(insight.id);
+        }
 
         logger.info('=== Discussion Successfully Completed ===');
         return { success: true };
@@ -382,11 +521,16 @@ async function getDiscussionStatus() {
  * @param {Object} options - Parameters for running the discussion.
  * @param {Array} options.profiles - List of profiles.
  * @param {Object} options.settings - Discussion settings.
+ * @param {string} options.chatUrl - URL чата для обсуждения (обязательно)
  * @returns {Promise<Object>} A promise that resolves with the discussion result.
  */
-async function runDiscussionWithProfiles({ profiles: profileIds, settings }) {
+async function runDiscussionWithProfiles({ profiles: profileIds, settings, chatUrl }) {
     try {
         logger.info('=== Starting Discussion ===');
+
+        if (!chatUrl) {
+            throw new Error('Chat URL is required');
+        }
 
         // Initialize services
         const services = await initializeServices();
@@ -414,9 +558,12 @@ async function runDiscussionWithProfiles({ profiles: profileIds, settings }) {
         const insight = await services.insightService.getInsight(usedInsightId);
         logger.debug(`Retrieved insight: ${JSON.stringify(insight)}`);
 
+        // Используем URL чата из параметров
+        logger.info(`Using chat URL: ${chatUrl}`);
+
         // Step 1: Publish insight from ALPHA_INSIDER
         logger.info('Step 1: Publishing insight from ALPHA_INSIDER');
-        await publishInsight(services, { [mainProfileId]: allProfiles[mainProfileId] }, insight);
+        await publishInsight(services, { [mainProfileId]: allProfiles[mainProfileId] }, insight, chatUrl);
         
         // Step 2: Select and get responses from other profiles
         logger.info('Step 2: Getting responses from other profiles');
@@ -438,10 +585,15 @@ async function runDiscussionWithProfiles({ profiles: profileIds, settings }) {
         logger.info(`Will select ${participantsCount} responders from available`);
 
         // Generate and publish responses
-        await generateAndPublishResponses(services, availableResponders, settings, insight);
+        await generateAndPublishResponses(services, availableResponders, settings, insight, chatUrl);
         
         // Delete the used insight
         await services.insightReaderService.deleteInsight(usedInsightId);
+        
+        // После успешной публикации дискуссии удаляем инсайт
+        if (insight && insight.id) {
+            await deleteInsightAfterUse(insight.id);
+        }
         
         logger.info('=== Discussion Successfully Completed ===');
         return { success: true };
@@ -468,42 +620,175 @@ function filterProfiles(allProfiles, profileIds) {
         : allProfiles;
 }
 
+/**
+ * Выбирает случайный URL чата из списка доступных
+ * @param {Array} chatUrls - Список URL чатов
+ * @returns {string} Случайный URL чата
+ */
+function selectRandomChatUrl(chatUrls) {
+    if (!chatUrls || chatUrls.length === 0) {
+        throw new Error('No chat URLs available');
+    }
+    const randomIndex = Math.floor(Math.random() * chatUrls.length);
+    return chatUrls[randomIndex];
+}
+
+/**
+ * Runs the discussion using a template
+ * @param {Object} options - Parameters for running the discussion
+ * @param {Array} options.templateIds - IDs of templates to run
+ * @param {Array} options.profiles - List of profile IDs to use
+ * @param {string} options.chatUrl - Optional chat URL to override template URL
+ */
+async function runDiscussionWithTemplate({ templateIds, profiles, chatUrl }) {
+    try {
+        logger.info('=== Starting Template-based Discussion ===');
+        
+        // Load ALL profiles first
+        const allProfiles = await loadProfiles();
+        logger.debug('All profiles loaded:', Object.keys(allProfiles).length);
+
+        // Create a map of available profiles
+        const availableProfiles = profiles.reduce((acc, profileId) => {
+            if (allProfiles[profileId]) {
+                acc[profileId] = allProfiles[profileId];
+            }
+            return acc;
+        }, {});
+
+        logger.info(`Available profiles for discussion: ${Object.keys(availableProfiles).length}`);
+
+        // Find ALPHA_INSIDER profile
+        const mainProfile = Object.entries(availableProfiles).find(([_, profile]) => 
+            profile.character === 'ALPHA_INSIDER'
+        );
+
+        if (!mainProfile) {
+            throw new Error('ALPHA_INSIDER profile not found among selected profiles');
+        }
+
+        const [mainProfileId] = mainProfile;
+        logger.info(`Using main profile: ${mainProfileId}`);
+
+        // Run each template sequentially
+        for (const templateId of templateIds) {
+            try {
+                logger.info(`Running template: ${templateId}`);
+                
+                // Load template
+                const templatePath = path.join(__dirname, 'data', 'discussion_drafts', `discussion_${templateId}.json`);
+                const templateContent = await fs.readFile(templatePath, 'utf8');
+                const template = JSON.parse(templateContent);
+
+                // Override chat URL if provided
+                const discussionUrl = chatUrl || template.chatUrl;
+                if (!discussionUrl) {
+                    throw new Error('No chat URL available');
+                }
+
+                // Map template profiles to available profiles
+                const profileMapping = mapTemplateProfiles(template, availableProfiles, mainProfileId);
+
+                // Run the template with mapped profiles
+                await runTemplateDiscussion(template, profileMapping, discussionUrl);
+
+                // Add delay between templates
+                if (templateIds.length > 1) {
+                    const templateDelay = getRandomDelay({ min: 30000, max: 60000 });
+                    logger.info(`Waiting ${templateDelay}ms before next template`);
+                    await delay(templateDelay);
+                }
+            } catch (error) {
+                logger.error(`Error running template ${templateId}:`, error);
+                // Continue with next template
+            }
+        }
+
+        logger.info('=== Template-based Discussion Completed ===');
+        return { success: true };
+    } catch (error) {
+        logger.error('Error in runDiscussionWithTemplate:', error);
+        throw error;
+    }
+}
+
+/**
+ * Maps template profiles to available profiles
+ */
+function mapTemplateProfiles(template, availableProfiles, mainProfileId) {
+    const mapping = new Map();
+    const usedProfiles = new Set([mainProfileId]);
+
+    // Map main profile first
+    mapping.set(template.mainProfile.profileId, mainProfileId);
+
+    // Map other profiles
+    for (const response of template.responses) {
+        if (!mapping.has(response.profileId)) {
+            // Find an unused profile
+            const availableProfile = Object.entries(availableProfiles)
+                .find(([id, _]) => !usedProfiles.has(id));
+
+            if (!availableProfile) {
+                throw new Error('Not enough profiles available for template');
+            }
+
+            const [profileId] = availableProfile;
+            mapping.set(response.profileId, profileId);
+            usedProfiles.add(profileId);
+        }
+    }
+
+    return mapping;
+}
+
+/**
+ * Runs a single template discussion
+ */
+async function runTemplateDiscussion(template, profileMapping, chatUrl) {
+    const publicationService = new PublicationService({ logger });
+
+    // Publish main insight
+    const mainProfileId = profileMapping.get(template.mainProfile.profileId);
+    await postInsightToTowns(mainProfileId, template.insight.content, chatUrl);
+    logger.info(`Published insight from ${mainProfileId}`);
+
+    // Publish responses
+    for (const response of template.responses) {
+        const profileId = profileMapping.get(response.profileId);
+        
+        // Wait for specified delay
+        await delay(response.delay);
+
+        // Post response
+        await postResponseToTowns(profileId, response.content, chatUrl);
+        logger.info(`Published response from ${profileId}`);
+    }
+}
+
 // Запуск скрипта
 if (require.main === module) {
     (async () => {
         try {
-            logger.info('=== Starting Discussion Script ===');
-            
-            // Получаем профили из аргументов командной строки
-            const settingsIndex = process.argv.indexOf('--settings');
-            const profileIds = settingsIndex > 2 
-                ? process.argv.slice(2, settingsIndex)
-                : [];
+            const params = parseArgs();
+            const profileIds = params.profiles || [];
+            const templateIds = params.templates || [];
+            const chatUrl = params.chatUrl;
 
-            if (!profileIds.length) {
-                throw new Error('Missing required parameter: profiles');
+            if (templateIds.length === 0) {
+                throw new Error('No template IDs provided');
             }
 
-            logger.info('Received profiles:', profileIds);
-            
-            // Получаем настройки
-            const settings = settingsIndex > 0 
-                ? JSON.parse(process.argv[settingsIndex + 1])
-                : await getDiscussionSettings();
-            
-            // Запускаем обсуждение
-            await runDiscussionWithProfiles({
+            await runDiscussionWithTemplate({
+                templateIds,
                 profiles: profileIds,
-                settings
+                chatUrl
             });
-            
+
             logger.info('=== Discussion Script Completed Successfully ===');
             process.exit(0);
         } catch (error) {
-            logger.error('Script terminated with error:', {
-                message: error.message,
-                stack: error.stack
-            });
+            logger.error('Script terminated with error:', error);
             process.exit(1);
         }
     })();
@@ -515,5 +800,7 @@ module.exports = {
     runDiscussionWithProfiles,
     processInsights,
     getRandomDelay,
-    getRandomParticipants
+    getRandomParticipants,
+    selectRandomChatUrl,
+    runDiscussionWithTemplate
 };

@@ -230,8 +230,8 @@ async function main(profileId) {
         const userDataDir = profile.userDataDir;
         const metamaskPath = process.env.METAMASK_PATH;
 
-        logger.info('Запуск браузера...');
-        browser = await chromium.launchPersistentContext(userDataDir, {
+        // Настройка прокси если он указан в профиле
+        let browserOptions = {
             headless: false,
             args: [
                 `--disable-extensions-except=${metamaskPath}`,
@@ -239,14 +239,57 @@ async function main(profileId) {
                 '--no-sandbox',
                 '--start-maximized'
             ]
-        });
+        };
+
+        // Добавляем User-Agent, если он указан в профиле
+        if (profile.userAgent) {
+            browserOptions.userAgent = profile.userAgent;
+            logger.info(`Установлен User-Agent: ${profile.userAgent}`);
+        }
+
+        // Добавление настройки прокси
+        if (profile.proxy && profile.proxy !== 'direct') {
+            const proxyStr = profile.proxy.trim();
+            logger.info(`Настройка прокси: ${proxyStr}`);
+            
+            try {
+                // Извлекаем данные из URL прокси
+                const regex = /http:\/\/([^:]+):([^@]+)@([^:]+):(\d+)/;
+                const match = proxyStr.match(regex);
+                
+                if (match) {
+                    const [_, username, password, host, port] = match;
+                    browserOptions.proxy = {
+                        server: `http://${host}:${port}`,
+                        username: username,
+                        password: password,
+                    };
+                    logger.info(`Прокси настроен: ${host}:${port} с учетными данными`);
+                } else {
+                    logger.error(`Не удалось разобрать URL прокси: ${proxyStr}`);
+                    browserOptions.proxy = { server: proxyStr };
+                }
+            } catch (e) {
+                logger.error(`Ошибка при разборе прокси: ${e.message}`);
+                browserOptions.proxy = { server: proxyStr };
+            }
+        } else {
+            logger.info('Прокси не указан для этого профиля, запуск без прокси');
+        }
+
+        logger.info('Запуск браузера...');
+        browser = await chromium.launchPersistentContext(userDataDir, browserOptions);
 
         // Используем данные профиля для MetaMask
         const seedPhrase = profile.metamaskSeed;
         const password = profile.metamaskPassword;
         
-        // Создаем экземпляр EmailReader
-        const emailReader = new EmailReader(profile.email, profile.emailPassword);
+        // Создаем экземпляр EmailReader с передачей icloudEmail
+        const emailReader = new EmailReader(
+            profile.email,
+            profile.emailPassword,
+            profile.icloudEmail // Передаем icloudEmail как targetEmail
+        );
 
         // При сохранении состояния используем файл профиля
         await browser.storageState({ path: profile.authFile });
@@ -370,7 +413,7 @@ async function main(profileId) {
 
         // Ищем и нажимаем кнопку логина
         logger.info('Нажатие кнопки логина...');
-        const loginButtonSelector = 'xpath=/html/body/div/div[1]/div/div[2]/div/div/div/button/div[1]';
+        const loginButtonSelector = 'xpath=/html/body/div/span[1]/span/span[2]/span/span/span/button/div';
         await townsPage.waitForSelector(loginButtonSelector, { 
             state: 'visible',
             timeout: 30000 

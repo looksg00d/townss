@@ -51,7 +51,9 @@ async function loadLines(filename) {
     const filePath = path.join(paths.CONFIG_DIR, filename);
     try {
         const content = await fs.readFile(filePath, 'utf8');
-        return content.split('\n').filter(line => line.trim() && !line.startsWith('//'));
+        return content.split('\n')
+            .filter(line => line.trim() && !line.startsWith('//'))
+            .map(line => line.replace(/\r/g, ''));
     } catch (error) {
         logger.error(`Ошибка при загрузке файла ${filename}:`, error.message);
         throw error;
@@ -81,15 +83,6 @@ const CHARACTERS = [
 async function createProfiles(startIndex = 0, count = 1) {
     try {
         logger.info(`Создание ${count} профилей начиная с индекса ${startIndex}`);
-
-        // Проверяем существование директории MetaMask
-        try {
-            await fs.access(METAMASK_DIR);
-            logger.info(`MetaMask директория найдена: ${METAMASK_DIR}`);
-        } catch (error) {
-            logger.error(`Директория MetaMask не найдена: ${METAMASK_DIR}`);
-            throw new Error(`Директория MetaMask не найдена: ${METAMASK_DIR}`);
-        }
 
         // Загружаем все данные из TXT файлов
         logger.info('Загрузка данных из TXT файлов...');
@@ -130,15 +123,15 @@ async function createProfiles(startIndex = 0, count = 1) {
                 name: `Профиль ${startIndex + i + 1}`,
                 userDataDir: path.join(PROFILES_BASE_DIR, profileId, 'chrome'),
                 authFile: path.join(PROFILES_BASE_DIR, profileId, 'auth.json'),
-                metamaskDir: METAMASK_DIR,
-                metamaskSeed: seedPhrases[startIndex + i],
+                metamaskSeed: seedPhrases[startIndex + i].replace(/\r/g, ''),
                 metamaskPassword: '11111111',
-                email: gmailAddress,
-                emailPassword: gmailPassword,
-                icloudEmail: icloudEmails[startIndex + i],
-                proxy: proxies[startIndex + i],
+                email: gmailAddress.replace(/\r/g, ''),
+                emailPassword: gmailPassword.replace(/\r/g, ''),
+                icloudEmail: icloudEmails[startIndex + i].replace(/\r/g, ''),
+                proxy: proxies[startIndex + i].replace(/\r/g, ''),
                 userAgent: userAgents[startIndex + i],
-                character // Сохраняем только username персонажа
+                character,
+                tags: ['all', character.toLowerCase()]
             };
 
             // Создаем директорию профиля

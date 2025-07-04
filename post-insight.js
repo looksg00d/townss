@@ -15,11 +15,7 @@ const FileService = require('./services/fileservice');
 const delay = require('./services/delay');
 const ProfileManager = require('./profile-manager');
 const { getDiscussionSettings } = require('./services/discussionSettingsService');
-
-/**
- * URL чата Towns
- */
-const CHAT_URL = 'https://app.towns.com/t/0xfd1bac5f087a8ef0066e54a2a7425095c93fa614/channels/20fd1bac5f087a8ef0066e54a2a7425095c93fa6140000000000000000000000';
+const { readFile, writeFile } = require('fs').promises;
 
 /**
  * Функция для запуска браузера
@@ -39,7 +35,8 @@ async function runBrowser(profileId) {
     const userDataDir = profile.userDataDir;
     const metamaskPath = process.env.METAMASK_PATH;
 
-    const browser = await chromium.launchPersistentContext(userDataDir, {
+    // Добавляем поддержку прокси
+    const browserOptions = {
         headless: false,
         args: [
             `--disable-extensions-except=${metamaskPath}`,
@@ -47,8 +44,45 @@ async function runBrowser(profileId) {
             '--no-sandbox',
             '--start-maximized'
         ]
-    });
+    };
 
+    // Добавляем User-Agent, если он указан в профиле
+    if (profile.userAgent) {
+        browserOptions.userAgent = profile.userAgent;
+        logger.info(`Установлен User-Agent: ${profile.userAgent}`);
+    }
+
+    // Добавляем настройку прокси
+    if (profile.proxy && profile.proxy !== 'direct') {
+        const proxyStr = profile.proxy.trim();
+        logger.info(`Настройка прокси: ${proxyStr}`);
+        
+        try {
+            // Извлекаем данные из URL прокси
+            const regex = /http:\/\/([^:]+):([^@]+)@([^:]+):(\d+)/;
+            const match = proxyStr.match(regex);
+            
+            if (match) {
+                const [_, username, password, host, port] = match;
+                browserOptions.proxy = {
+                    server: `http://${host}:${port}`,
+                    username: username,
+                    password: password,
+                };
+                logger.info(`Прокси настроен: ${host}:${port} с учетными данными`);
+            } else {
+                logger.error(`Не удалось разобрать URL прокси: ${proxyStr}`);
+                browserOptions.proxy = { server: proxyStr };
+            }
+        } catch (e) {
+            logger.error(`Ошибка при разборе прокси: ${e.message}`);
+            browserOptions.proxy = { server: proxyStr };
+        }
+    } else {
+        logger.info('Прокси не указан для этого профиля, запуск без прокси');
+    }
+
+    const browser = await chromium.launchPersistentContext(userDataDir, browserOptions);
     const page = await browser.newPage();
     return { browser, page };
 }
@@ -100,17 +134,22 @@ async function uploadImages(page, images) {
  * @param {string} profileId 
  * @param {string} content 
  * @param {string[]} images 
+ * @param {string} chatUrl URL чата (обязательно)
  * @returns {Promise<void>}
  */
-async function postMessageToTowns(profileId, content, images = []) {
+async function postMessageToTowns(profileId, content, images = [], chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     let browser;
     try {
         const settings = await getDiscussionSettings();
         const { browser: newBrowser, page } = await runBrowser(profileId);
         browser = newBrowser;
 
-        logger.info('Открытие чата Towns...');
-        await page.goto(CHAT_URL, { 
+        logger.info(`Открытие чата Towns: ${chatUrl}`);
+        await page.goto(chatUrl, { 
             timeout: 60000,
             waitUntil: 'load'
         });
@@ -166,9 +205,14 @@ async function postMessageToTowns(profileId, content, images = []) {
  * Для публикации инсайта
  * @param {string} profileId 
  * @param {number} insightId 
+ * @param {string} chatUrl URL чата (обязательно)
  * @returns {Promise<void>}
  */
-async function postInsightToTowns(profileId, insightId) {
+async function postInsightToTowns(profileId, insightId, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     try {
         // Проверка профиля
         const profiles = await loadProfiles();
@@ -202,8 +246,11 @@ async function postInsightToTowns(profileId, insightId) {
             throw new Error(`Инсайт ${insightId} не найден`);
         }
 
-        // Публикуем инсайт
-        await postMessageToTowns(profileId, insight.content, insight.images || []);
+        // Публикуем инсайт с указанным URL чата
+        await postMessageToTowns(profileId, insight.content, insight.images || [], chatUrl);
+
+        // Сохраняем сообщение в историю после успешной публикации
+        await saveMessageToHistory(insight.content);
 
         // Удаляем инсайт после успешной публикации
         await insightReader.deleteInsight(insightId);
@@ -215,15 +262,63 @@ async function postInsightToTowns(profileId, insightId) {
 }
 
 /**
+ * Сохраняет сообщение в историю
+ * @param {string} message Сообщение для сохранения
+ * @param {number} maxHistory Максимальное количество сообщений в истории
+ * @returns {Promise<void>}
+ */
+async function saveMessageToHistory(message, maxHistory = 100) {
+    try {
+        const historyPath = path.join(__dirname, 'data', 'message_history.json');
+        let history = [];
+        
+        try {
+            const historyData = await readFile(historyPath, 'utf8');
+            history = JSON.parse(historyData);
+        } catch (err) {
+            // Если файл не существует или поврежден, создаем новую историю
+            history = [];
+        }
+        
+        // Добавляем новое сообщение в начало массива
+        history.unshift(message);
+        
+        // Ограничиваем размер истории
+        if (history.length > maxHistory) {
+            history = history.slice(0, maxHistory);
+        }
+        
+        // Создаем директорию, если она не существует
+        const dir = path.dirname(historyPath);
+        await fs.mkdir(dir, { recursive: true }).catch(() => {});
+        
+        // Сохраняем обновленную историю
+        await writeFile(historyPath, JSON.stringify(history, null, 2), 'utf8');
+        logger.info(`Сообщение сохранено в историю (всего: ${history.length})`);
+    } catch (error) {
+        logger.error(`Ошибка при сохранении сообщения в историю: ${error.message}`);
+    }
+}
+
+/**
  * Функция для публикации ответа
  * @param {string} profileId 
  * @param {string} response 
+ * @param {string} chatUrl URL чата (обязательно)
  * @returns {Promise<void>}
  */
-async function postResponseToTowns(profileId, response) {
+async function postResponseToTowns(profileId, response, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     try {
         logger.info(`Публикация ответа от профиля ${profileId}...`);
-        await postMessageToTowns(profileId, response, []);
+        
+        await postMessageToTowns(profileId, response, [], chatUrl);
+        
+        // Сохраняем сообщение в историю после успешной публикации
+        await saveMessageToHistory(response);
     } catch (error) {
         logger.error('Ошибка при публикации ответа:', error.message);
         throw error;
@@ -254,5 +349,6 @@ if (require.main === module) {
 module.exports = {
     postInsightToTowns,
     postResponseToTowns,
-    postMessageToTowns
+    postMessageToTowns,
+    saveMessageToHistory
 };

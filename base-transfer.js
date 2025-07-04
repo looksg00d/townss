@@ -4,8 +4,8 @@ const path = require('path');
 require('dotenv').config();
 
 async function getRandomAmount() {
-    const minAmount = parseInt(process.env.MIN_AMOUNT) || 15;
-    const maxAmount = parseInt(process.env.MAX_AMOUNT) || 22;
+    const minAmount = parseInt(process.env.MIN_AMOUNT) || 3;
+    const maxAmount = parseInt(process.env.MAX_AMOUNT) || 8;
     
     const randomNum = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
     console.log('Сгенерированное число:', randomNum);
@@ -33,13 +33,36 @@ async function sendBaseTransaction(recipientAddress, profileId) {
         const provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org');
         const wallet = ethers.Wallet.fromMnemonic(seedPhrase).connect(provider);
         
-        const amount = await getRandomAmount();
+        // Получаем текущий баланс кошелька
+        const balance = await wallet.getBalance();
+        console.log('Текущий баланс кошелька:', ethers.utils.formatEther(balance), 'ETH');
+        
+        // Если баланс слишком мал, выбрасываем ошибку
+        if (balance.lt(ethers.utils.parseEther('0.001'))) {
+            throw new Error(`Недостаточно средств на кошельке: ${ethers.utils.formatEther(balance)} ETH`);
+        }
+        
+        // Получаем случайную сумму для резерва
+        const reserveAmount = await getRandomAmount();
+        const reserveWei = ethers.utils.parseEther(reserveAmount);
+        
+        // Рассчитываем сумму для отправки (баланс минус резерв)
+        const amountToSend = balance.sub(reserveWei);
+        
+        // Проверяем, что сумма для отправки положительная
+        if (amountToSend.lte(0)) {
+            throw new Error('После вычета резерва сумма для отправки меньше или равна нулю');
+        }
+        
+        const sendAmountEth = ethers.utils.formatEther(amountToSend);
+        
         console.log('Отправляем транзакцию на адрес:', recipientAddress);
-        console.log('Сумма:', amount, 'ETH');
+        console.log('Сумма:', sendAmountEth, 'ETH');
+        console.log('Оставляем в резерве:', reserveAmount, 'ETH');
         
         const tx = await wallet.sendTransaction({
             to: recipientAddress,
-            value: ethers.utils.parseEther(amount),
+            value: amountToSend,
             chainId: 8453,
             gasLimit: 21000,
         });

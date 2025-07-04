@@ -4,10 +4,11 @@ const { simpleParser } = require('mailparser');
 const logger = require('./services/logger').withLabel('EmailReader');
 
 class EmailReader {
-    constructor(email, password, imap_server = 'imap.gmail.com') {
+    constructor(email, password, targetEmail = null, imap_server = 'imap.gmail.com') {
         this.email = email;
         this.password = password;
         this.imap_server = imap_server;
+        this.targetEmail = targetEmail;
         this.maxAttempts = 5;
         this.attemptCount = 0;
         this.lastCheckedTime = new Date();
@@ -50,7 +51,8 @@ class EmailReader {
 
                         logger.info('Searching for new emails with criteria:', {
                             subjectPattern: '6 digits + "is your login code for Towns"',
-                            since: this.lastCheckedTime.toISOString()
+                            since: this.lastCheckedTime.toISOString(),
+                            targetEmail: this.targetEmail // Убираем 'any', всегда показываем конкретный email
                         });
 
                         imap.search(searchCriteria, (err, results) => {
@@ -95,8 +97,31 @@ class EmailReader {
                                             return;
                                         }
 
+                                        // Проверяем, соответствует ли получатель целевому email
+                                        if (this.targetEmail) {
+                                            const toAddresses = parsed.to.value.map(addr => addr.address.toLowerCase());
+                                            const targetFound = toAddresses.some(addr => 
+                                                addr.includes(this.targetEmail.toLowerCase())
+                                            );
+                                            
+                                            if (!targetFound) {
+                                                logger.warn('Email recipient does not match target email', {
+                                                    recipients: toAddresses.join(', '),
+                                                    targetEmail: this.targetEmail
+                                                });
+                                                reject(new Error('Email not for target recipient'));
+                                                return;
+                                            }
+                                            
+                                            logger.info('Found email for target recipient', {
+                                                recipient: toAddresses.join(', '),
+                                                targetEmail: this.targetEmail
+                                            });
+                                        }
+
                                         logger.info('Found new email:', {
                                             from: parsed.from.text,
+                                            to: parsed.to.text,
                                             subject: parsed.subject,
                                             date: emailDate.toISOString(),
                                             receivedDate: new Date().toISOString()
@@ -117,6 +142,7 @@ class EmailReader {
                                                 code,
                                                 emailDetails: {
                                                     from: parsed.from.text,
+                                                    to: parsed.to.text,
                                                     subject: parsed.subject,
                                                     date: emailDate,
                                                     id: latestEmailId

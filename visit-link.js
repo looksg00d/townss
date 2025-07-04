@@ -2,6 +2,7 @@ const { runBrowser } = require('./run-browser');
 const { loadProfiles } = require('./profiles');
 const logger = require('./services/logger').withLabel('visit-link');
 const { reauth } = require('./reauth');
+const { waitRandom } = require('./delay');
 
 // Обновляем функцию проверки загрузки страницы
 async function waitForPageReady(page) {
@@ -14,15 +15,15 @@ async function waitForPageReady(page) {
                 page.waitForFunction(() => {
                     const loaders = document.querySelectorAll('[class*="loader"], [class*="loading"], [class*="spinner"]');
                     return loaders.length === 0;
-                }, { timeout: 10000 })
+                }, { timeout: 30000 })
             ]),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 90000))
         ]);
     } catch (e) {
         logger.warn('Warning: page might not be fully loaded:', e.message);
     }
     
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(10000);
     logger.info('✅ Page is considered loaded');
 }
 
@@ -45,12 +46,25 @@ async function visitLink(profileId, targetUrl) {
         // Создаем новую страницу
         page = await browser.newPage();
         
-        // Навигация с ожиданием только загрузки DOM
-        logger.info(`Navigating to ${targetUrl}`);
-        await page.goto(targetUrl, { 
+        // Предварительный переход для установления соединения с прокси
+        logger.info("Pre-authenticating proxy by navigating to Towns homepage...");
+        await page.goto('https://app.towns.com', { 
             waitUntil: 'domcontentloaded',
             timeout: 60000
         });
+        await waitForPageReady(page);
+        await waitRandom(5000, 10000);
+
+        // Навигация с ожиданием только загрузки DOM
+        logger.info(`Navigating to ${targetUrl}`);
+        const response = await page.goto(targetUrl, { 
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
+        });
+        if (!response || !response.ok()) {
+            const status = response ? response.status() : 'No response';
+            throw new Error(`Navigation to ${targetUrl} failed with HTTP status: ${status}`);
+        }
         
         await waitForPageReady(page);
         

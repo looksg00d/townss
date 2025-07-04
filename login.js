@@ -3,7 +3,6 @@ const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 const { loadProfiles } = require('./profiles');
-const ncp = require('copy-paste');
 const { sendBaseTransaction } = require('./base-transfer.js');
 const fs = require('fs').promises;
 
@@ -164,12 +163,12 @@ async function handleTownsLogin(page, profile, profileId) {
     // Даем время на копирование
     await page.waitForTimeout(2000);
     
-    // Читаем из буфера обмена
-    const clipboardText = ncp.paste();
+    // Читаем из буфера обмена через PowerShell
+    const clipboardText = await readClipboard();
     console.log('Содержимое буфера обмена:', clipboardText);
     
     // Очищаем адрес от лишнего текста
-    const address = clipboardText.replace('Содержимое буфера обмена: ', '').trim();
+    const address = clipboardText.trim();
     console.log('Очищенный адрес:', address);
     
     if (!address.startsWith('0x')) {
@@ -182,6 +181,20 @@ async function handleTownsLogin(page, profile, profileId) {
   } catch (error) {
     console.error('Ошибка при выполнении действий:', error);
     throw error;
+  }
+}
+
+/**
+ * Читает содержимое буфера обмена с помощью PowerShell
+ * @returns {Promise<string>} Содержимое буфера обмена
+ */
+async function readClipboard() {
+  try {
+    const { stdout } = await execAsync('powershell -command "Get-Clipboard"');
+    return stdout.trim();
+  } catch (error) {
+    console.error('Ошибка при чтении буфера обмена:', error.message);
+    return '';
   }
 }
 
@@ -227,7 +240,8 @@ async function runLogin(profileId) {
       console.log('MetaMask path:', metamaskPath);
       console.log('Запуск браузера с существующим профилем...');
       
-      browser = await chromium.launchPersistentContext(userDataDir, {
+      // Создаем объект с опциями браузера
+      const browserOptions = {
         headless: false,
         storageState: profile.authFile,
         args: [
@@ -241,7 +255,45 @@ async function runLogin(profileId) {
           '--enable-extensions',
         ],
         timeout: 60000,
-      });
+      };
+      
+      // Добавляем User-Agent, если он указан в профиле
+      if (profile.userAgent) {
+        browserOptions.userAgent = profile.userAgent;
+        console.log(`Установлен User-Agent: ${profile.userAgent}`);
+      }
+      
+      // Добавляем настройку прокси
+      if (profile.proxy && profile.proxy !== 'direct') {
+        const proxyStr = profile.proxy.trim();
+        console.log(`Настройка прокси: ${proxyStr}`);
+        
+        try {
+          // Извлекаем данные из URL прокси
+          const regex = /http:\/\/([^:]+):([^@]+)@([^:]+):(\d+)/;
+          const match = proxyStr.match(regex);
+          
+          if (match) {
+            const [_, username, password, host, port] = match;
+            browserOptions.proxy = {
+              server: `http://${host}:${port}`,
+              username: username,
+              password: password,
+            };
+            console.log(`Прокси настроен: ${host}:${port} с учетными данными`);
+          } else {
+            console.error(`Не удалось разобрать URL прокси: ${proxyStr}`);
+            browserOptions.proxy = { server: proxyStr };
+          }
+        } catch (e) {
+          console.error(`Ошибка при разборе прокси: ${e.message}`);
+          browserOptions.proxy = { server: proxyStr };
+        }
+      } else {
+        console.log('Прокси не указан для этого профиля или установлен как "direct", запуск без прокси');
+      }
+      
+      browser = await chromium.launchPersistentContext(userDataDir, browserOptions);
 
       console.log('Ожидание инициализации браузера и расширений...');
       await new Promise(resolve => setTimeout(resolve, 10000));

@@ -4,134 +4,195 @@
     "name": "Профиль 1",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile1\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile1\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "pill glad walk voice joke human fortune first shop media gun setup",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "nailchiksam@gmail.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/121.0.6167.160 Safari/537.36",
-    "character": "ALPHA_INSIDER"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "juicy.cockles-0f@icloud.com",
+    "proxy": "http://wqnfutnw:a57omrbixk0q@207.244.217.165:6712",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.6438.193 Safari/537.36",
+    "character": "CALLER",
+    "tags": [
+      "all",
+      "caller"
+    ]
   },
   "profile2": {
     "profileId": "profile2",
     "name": "Профиль 2",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile2\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile2\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "symptom length accident balcony kangaroo learn normal run increase typical cheese avocado",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "winless_tepee.0n@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/121.0.0.0",
-    "character": "DEFI_DEV"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "gryphon-jangly-0e@icloud.com",
+    "proxy": "http://lucysadatqlr34:MXfHGhG5pi@178.253.13.113:50100",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.160 Safari/537.36",
+    "character": "DEFI_DEV",
+    "tags": [
+      "all",
+      "defi_dev"
+    ]
   },
   "profile3": {
     "profileId": "profile3",
     "name": "Профиль 3",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile3\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile3\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "very heart tonight laundry local rocket combine satisfy gate trip just marriage",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "juicy.cockles-0f@icloud.com",
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "calmer.signage.0m@icloud.com",
     "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0",
-    "character": "CHAT_GRINDER"
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.89 Safari/537.36",
+    "character": "RETRO_MAN",
+    "tags": [
+      "all",
+      "retro_man"
+    ]
   },
   "profile4": {
     "profileId": "profile4",
     "name": "Профиль 4",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile4\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile4\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "melody spread boring torch unfold jealous help plunge thought weather guide silent",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "sober-hayloft-0a@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.43 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 OPR/90.0.4480.54",
-    "character": "CALLER"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "matting.cravens0j@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@161.123.152.115:6360",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.88 Safari/537.36",
+    "character": "CRYPTO_OG",
+    "tags": [
+      "all",
+      "crypto_og"
+    ]
   },
   "profile5": {
     "profileId": "profile5",
     "name": "Профиль 5",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile5\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile5\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "fancy amused punch split embrace sight minimum receive flee section misery expect",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "calmer.signage.0m@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.111 Safari/537.36",
-    "character": "CRYPTO_INSIDER"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "residue_bungles0w@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@23.94.138.75:6349",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36",
+    "character": "DEFI_DEV",
+    "tags": [
+      "all",
+      "defi_dev"
+    ]
   },
   "profile6": {
     "profileId": "profile6",
     "name": "Профиль 6",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile6\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile6\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "artefact loop twelve couple agent patch nation salt lazy laptop ramp entire",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "matting.cravens0j@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.65 Safari/537.36",
-    "character": "CRYPTO_OG"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "warier.touch-07@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@216.10.27.159:6837",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.159 Safari/537.36",
+    "character": "CHAT_GRINDER",
+    "tags": [
+      "all",
+      "chat_grinder"
+    ]
   },
   "profile7": {
     "profileId": "profile7",
     "name": "Профиль 7",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile7\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile7\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "visual top special aisle gate retreat issue tip shop reveal light agree",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "residue_bungles0w@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.41 Safari/537.36",
-    "character": "CRYPTO_GIRL"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "maxima.roughs_0x@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@136.0.207.84:6661",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.6943.127 Safari/537.36",
+    "character": "CALLER",
+    "tags": [
+      "all",
+      "caller"
+    ]
   },
   "profile8": {
     "profileId": "profile8",
     "name": "Профиль 8",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile8\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile8\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "common huge crater people spice acquire goose cattle rich hire feel regular",
-    "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
-    "icloudEmail": "skids.scrolls0p@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.66 Safari/537.36",
-    "character": "RETRO_MAN"
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "crusade_trend.0y@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@64.64.118.149:6732",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.84 Safari/537.36",
+    "character": "FARMER",
+    "tags": [
+      "all",
+      "farmer"
+    ]
   },
   "profile9": {
     "profileId": "profile9",
     "name": "Профиль 9",
     "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile9\\chrome",
     "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile9\\auth.json",
-    "metamaskDir": "C:/Users/User/Desktop/wwww/towns/METAMASK",
-    "metamaskSeed": "common huge crater people spice acquire goose cattle rich hire feel regular",
+    "email": "nailchiksam@gmail.com",
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "winless_tepee.0n@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@142.147.128.93:6593",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.88 Safari/537.36",
+    "character": "CRYPTO_DEGEN",
+    "tags": [
+      "all",
+      "crypto_degen"
+    ]
+  },
+  "profile10": {
+    "profileId": "profile10",
+    "name": "Профиль 10",
+    "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile10\\chrome",
+    "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile10\\auth.json",
+    "email": "nailchiksam@gmail.com",
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "haiku-adagios0q@icloud.com",
+    "proxy": "http://tejbtpmy:7xp9vjr0pjwb@154.36.110.199:6853",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.6943.54 Safari/537.36",
+    "character": "DEFI_DEV",
+    "tags": [
+      "all",
+      "defi_dev"
+    ]
+  },
+  "profile11": {
+    "profileId": "profile11",
+    "name": "Профиль 11",
+    "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile11\\chrome",
+    "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile11\\auth.json",
+    "metamaskSeed": "boil simple engage city observe churn movie reason flight van path float fame sniff essence village kite often benefit swift mystery royal cancel dad",
     "metamaskPassword": "11111111",
     "email": "nailchiksam@gmail.com",
-    "emailPassword": "kmxgkywnznoxkmqj",
+    "emailPassword": "zejpbxzonijgtiuw",
     "icloudEmail": "spectra_nicks0z@icloud.com",
-    "proxy": "direct",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36",
-    "character": "MEV_DEV"
+    "proxy": "http://ynatbpob:orw3tqqd7emg@45.192.136.131:5425",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.6943.142 Safari/537.36",
+    "character": "RETRO_MAN",
+    "tags": [
+      "all",
+      "retro_man"
+    ]
+  },
+  "profile12": {
+    "profileId": "profile12",
+    "name": "Профиль 12",
+    "userDataDir": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile12\\chrome",
+    "authFile": "C:\\Users\\User\\Desktop\\wwww\\towns\\profiles\\profile12\\auth.json",
+    "metamaskSeed": "boil simple engage city observe churn movie reason flight van path float fame sniff essence village kite often benefit swift mystery royal cancel dad",
+    "metamaskPassword": "11111111",
+    "email": "nailchiksam@gmail.com",
+    "emailPassword": "zejpbxzonijgtiuw",
+    "icloudEmail": "tunes-glance0d@icloud.com",
+    "proxy": "http://ynatbpob:orw3tqqd7emg@64.137.103.231:6819",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.36 Safari/537.36",
+    "character": "DEFI_DEV",
+    "tags": [
+      "all",
+      "defi_dev"
+    ]
   }
 }

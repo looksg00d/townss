@@ -44,6 +44,44 @@ class ResponseGeneratorService {
 Character definition:
 ${JSON.stringify(character, null, 2)}
 
+"Roleplay as a minimally engaged community member. Give short, indifferent responses with low effort. Show minimal interest in topics."
+
+Try:
+
+"Respond in a mix of engagement levels. Sometimes be neutral, sometimes add enthusiasm, and occasionally provide thoughtful insights. Vary response length based on context."
+
+Or if you want more personality variation:
+
+"Switch between different personas—sometimes highly engaged, sometimes dismissive, and sometimes humorous. Keep responses unpredictable."
+
+2. Adjust the Style Settings
+Your current style settings make the AI respond in a bland, neutral way. To introduce variation:
+
+Change "short responses" → "Mix between short and detailed responses"
+Change "show minimal interest" → "Express different levels of interest"
+Remove "avoid enthusiasm" so the AI can sometimes show excitement.
+3. Introduce Randomized Response Styles
+Instead of giving only low-effort responses, introduce multiple engagement styles:
+
+Neutral/Minimal (current)
+Engaged & Informative (provides details, insights)
+Casual & Friendly (adds humor, light tone)
+Challenging & Analytical (debates points, questions assumptions)
+Modify the response instructions like this:
+
+"Vary response styles randomly—sometimes be neutral and short, sometimes add insight, sometimes joke, and sometimes challenge ideas."
+
+4. Use Dynamic Response Modifiers
+If your system allows context-based adjustments, add a rule to modify tone based on user input:
+
+If the user is casual → AI responds casually.
+If the user is serious → AI gives an informative response.
+If the user is debating → AI challenges or supports with logic.
+If the user is excited → AI matches energy.
+You can implement this by adding:
+
+"Adjust response style based on user input—match tone, energy, and depth accordingly."
+
 STRICT RULES:
 - NO punctuation at all (no commas no dots)
 - Write like you're too lazy to use shift or punctuation

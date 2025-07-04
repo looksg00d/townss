@@ -2,11 +2,13 @@ const { chromium } = require('playwright');
 const { loadProfiles } = require('./profiles');
 const { waitForPageReady } = require('./towns'); // импортируем только нужную функцию
 
-const CHAT_URL = 'https://app.towns.com/t/0xfd1bac5f087a8ef0066e54a2a7425095c93fa614/channels/20fd1bac5f087a8ef0066e54a2a7425095c93fa6140000000000000000000000';
-
-async function enterChat(page) {
-    console.log('Открытие чата Towns...');
-    await page.goto(CHAT_URL, { waitUntil: 'networkidle', timeout: 60000 });
+// Убираем URL по умолчанию, теперь он должен быть передан явно
+async function enterChat(page, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    console.log(`Открытие чата Towns: ${chatUrl}`);
+    await page.goto(chatUrl, { waitUntil: 'networkidle', timeout: 60000 });
 }
 
 async function sendMessage(page, content) {
@@ -40,7 +42,11 @@ async function sendMessage(page, content) {
 }
 
 // Запускаем чат для конкретного профиля
-async function runChat(profileId) {
+async function runChat(profileId, chatUrl) {
+    if (!chatUrl) {
+        throw new Error('Chat URL is required');
+    }
+    
     const profiles = await loadProfiles();
     const profile = profiles[profileId];
     
@@ -48,13 +54,68 @@ async function runChat(profileId) {
         throw new Error(`Профиль ${profileId} не найден`);
     }
 
-    console.log(`Запуск чата для профиля ${profile.name}`);
+    console.log(`Запуск чата для профиля ${profile.name} с URL: ${chatUrl}`);
     
-    // Используем существующую страницу из towns.js
-    // Эта функция должна вызываться после успешного входа в towns
+    const userDataDir = profile.userDataDir;
+    const metamaskPath = process.env.METAMASK_PATH;
+    
+    // Добавляем поддержку прокси
+    const browserOptions = {
+        headless: false,
+        args: [
+            `--disable-extensions-except=${metamaskPath}`,
+            `--load-extension=${metamaskPath}`,
+            '--no-sandbox',
+            '--start-maximized'
+        ]
+    };
+
+    // Добавляем User-Agent, если он указан в профиле
+    if (profile.userAgent) {
+        browserOptions.userAgent = profile.userAgent;
+        console.log(`Установлен User-Agent: ${profile.userAgent}`);
+    }
+
+    // Добавляем настройку прокси
+    if (profile.proxy && profile.proxy !== 'direct') {
+        const proxyStr = profile.proxy.trim();
+        logger.info(`Настройка прокси: ${proxyStr}`);
+        
+        try {
+            // Извлекаем данные из URL прокси
+            const regex = /http:\/\/([^:]+):([^@]+)@([^:]+):(\d+)/;
+            const match = proxyStr.match(regex);
+            
+            if (match) {
+                const [_, username, password, host, port] = match;
+                browserOptions.proxy = {
+                    server: `http://${host}:${port}`,
+                    username: username,
+                    password: password,
+                };
+                console.log(`Прокси настроен: ${host}:${port} с учетными данными`);
+            } else {
+                console.error(`Не удалось разобрать URL прокси: ${proxyStr}`);
+                browserOptions.proxy = { server: proxyStr };
+            }
+        } catch (e) {
+            console.error(`Ошибка при разборе прокси: ${e.message}`);
+            browserOptions.proxy = { server: proxyStr };
+        }
+    } else {
+        console.log('Прокси не указан для этого профиля, запуск без прокси');
+    }
+    
+    const browser = await chromium.launchPersistentContext(userDataDir, browserOptions);
+    const page = await browser.newPage();
+    
+    // Открываем чат
+    await enterChat(page, chatUrl);
+    
     return {
-        enterChat,
-        sendMessage
+        browser,
+        page,
+        sendMessage: (content) => sendMessage(page, content)
     };
 }
 

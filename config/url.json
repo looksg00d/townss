@@ -1,0 +1,100 @@
+{
+    "groups": [
+      {
+        "groupTag": "Qukrsom valley",
+        "chatUrls": [
+          "https://app.towns.com/t/0x180abc03f5cea7dd5f591c1b39e68eb3bb449b8e/channels/20180abc03f5cea7dd5f591c1b39e68eb3bb449b8e0000000000000000000000/",
+          "https://app.towns.com/t/0x180abc03f5cea7dd5f591c1b39e68eb3bb449b8e/channels/20180abc03f5cea7dd5f591c1b39e68eb3bb449b8e3331777ce919b4b4e0126c/"
+        ]
+      },
+      {
+        "groupTag": "Nostalgy",
+        "chatUrls": [
+          "https://app.towns.com/t/0x46c78d714519daea55cc396232972269a8187aed/channels/2046c78d714519daea55cc396232972269a8187aed2dc5d7a4fec4cda3ec11a0/",
+          "https://app.towns.com/t/0x46c78d714519daea55cc396232972269a8187aed/channels/2046c78d714519daea55cc396232972269a8187aed0000000000000000000000/",
+          "https://app.towns.com/t/0x46c78d714519daea55cc396232972269a8187aed/channels/2046c78d714519daea55cc396232972269a8187aed9b3b8db95ed68c52a27840/",
+          "https://app.towns.com/t/0x46c78d714519daea55cc396232972269a8187aed/channels/2046c78d714519daea55cc396232972269a8187aed1724057812fb0d02307b92/",
+          "https://app.towns.com/t/0x46c78d714519daea55cc396232972269a8187aed/channels/2046c78d714519daea55cc396232972269a8187aedfb49766c2e2c479e4c3f99/"
+        ]
+      },
+      {
+        "groupTag": "Dante",
+        "chatUrls": [
+          "https://app.towns.com/t/0x623eed50e2426b043d71aa711f31c2453af8f84f/channels/20623eed50e2426b043d71aa711f31c2453af8f84f90079f3ee1e13051b29406/?panel=channel&stackId=&channelId=20623eed50e2426b043d71aa711f31c2453af8f84f90079f3ee1e13051b29406",
+          "https://app.towns.com/t/0x623eed50e2426b043d71aa711f31c2453af8f84f/channels/20623eed50e2426b043d71aa711f31c2453af8f84f0000000000000000000000/?panel=channel&stackId=&channelId=20623eed50e2426b043d71aa711f31c2453af8f84f0000000000000000000000"
+        ]
+      },
+      {
+        "groupTag": "SOL crushers",
+        "chatUrls": [
+          "https://app.towns.com/t/0x304943399840433c530e1eed1f23f44a203d89c9/channels/20304943399840433c530e1eed1f23f44a203d89c91c802b0c1009791c982357/?panel=channel&stackId=&channelId=20304943399840433c530e1eed1f23f44a203d89c91c802b0c1009791c982357",
+          "https://app.towns.com/t/0x304943399840433c530e1eed1f23f44a203d89c9/channels/20304943399840433c530e1eed1f23f44a203d89c90000000000000000000000/?panel=channel&stackId=&channelId=20304943399840433c530e1eed1f23f44a203d89c90000000000000000000000",
+          "https://app.towns.com/t/0x304943399840433c530e1eed1f23f44a203d89c9/channels/20304943399840433c530e1eed1f23f44a203d89c9f2775578647c03218590ce/?panel=channel&stackId=&channelId=20304943399840433c530e1eed1f23f44a203d89c9f2775578647c03218590ce",
+          "https://app.towns.com/t/0x304943399840433c530e1eed1f23f44a203d89c9/channels/20304943399840433c530e1eed1f23f44a203d89c9dbbcb62f11eea3eb54c804/?panel=channel&stackId=&channelId=20304943399840433c530e1eed1f23f44a203d89c9dbbcb62f11eea3eb54c804",
+          "https://app.towns.com/t/0x304943399840433c530e1eed1f23f44a203d89c9/channels/20304943399840433c530e1eed1f23f44a203d89c914a65aae48daaa05b3b690/?panel=channel&stackId=&channelId=20304943399840433c530e1eed1f23f44a203d89c914a65aae48daaa05b3b690"
+        ]
+      },
+      {
+        "groupTag": "Birmingham",
+        "chatUrls": [
+          "https://app.towns.com/t/0xff5df588ec37e4f8d3c5c26f3b808894a216a1e3/channels/20ff5df588ec37e4f8d3c5c26f3b808894a216a1e322a017042ff7bc33cddca0/?panel=channel&stackId=&channelId=20ff5df588ec37e4f8d3c5c26f3b808894a216a1e322a017042ff7bc33cddca0",
+          "https://app.towns.com/t/0xff5df588ec37e4f8d3c5c26f3b808894a216a1e3/channels/20ff5df588ec37e4f8d3c5c26f3b808894a216a1e30000000000000000000000/",
+          "https://app.towns.com/t/0xff5df588ec37e4f8d3c5c26f3b808894a216a1e3/channels/20ff5df588ec37e4f8d3c5c26f3b808894a216a1e32f51535a77d2da81e0690f/?panel=channel&stackId=&channelId=20ff5df588ec37e4f8d3c5c26f3b808894a216a1e32f51535a77d2da81e0690f",
+          "https://app.towns.com/t/0xff5df588ec37e4f8d3c5c26f3b808894a216a1e3/channels/20ff5df588ec37e4f8d3c5c26f3b808894a216a1e302e7fde6ee2556423d3ad1/?panel=channel&stackId=&channelId=20ff5df588ec37e4f8d3c5c26f3b808894a216a1e302e7fde6ee2556423d3ad1"
+        ]
+      },
+      {
+        "groupTag": "WWE",
+        "chatUrls": [
+          "https://app.towns.com/t/0xd9230e2c3a4d945ba893f8d615578cb8ae33e7ba/channels/20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba0000000000000000000000/?panel=channel&stackId=&channelId=20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba0000000000000000000000",
+          "https://app.towns.com/t/0xd9230e2c3a4d945ba893f8d615578cb8ae33e7ba/channels/20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba60114abf5c851ddb8c25c9/?panel=channel&stackId=&channelId=20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba60114abf5c851ddb8c25c9",
+          "https://app.towns.com/t/0xd9230e2c3a4d945ba893f8d615578cb8ae33e7ba/channels/20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba710c180c2ced86dd33b825/?panel=channel&stackId=&channelId=20d9230e2c3a4d945ba893f8d615578cb8ae33e7ba710c180c2ced86dd33b825",
+          "https://app.towns.com/t/0xd9230e2c3a4d945ba893f8d615578cb8ae33e7ba/channels/20d9230e2c3a4d945ba893f8d615578cb8ae33e7bab744edc05ed08b9ce8b523/?panel=channel&stackId=&channelId=20d9230e2c3a4d945ba893f8d615578cb8ae33e7bab744edc05ed08b9ce8b523"
+        ]
+      },
+      {
+        "groupTag": "Gvinch",
+        "chatUrls": [
+          "https://app.towns.com/t/0x9c761fd7b160c37559dd6b8a37bc503ded476d81/channels/209c761fd7b160c37559dd6b8a37bc503ded476d814286edf47065a21ee42977/?panel=channel&stackId=main&channelId=209c761fd7b160c37559dd6b8a37bc503ded476d814286edf47065a21ee42977",
+          "https://app.towns.com/t/0x9c761fd7b160c37559dd6b8a37bc503ded476d81/channels/209c761fd7b160c37559dd6b8a37bc503ded476d810000000000000000000000/?panel=channel&stackId=&channelId=209c761fd7b160c37559dd6b8a37bc503ded476d810000000000000000000000"
+        ]
+      },
+      {
+        "groupTag": "Butterfly",
+        "chatUrls": [
+          "https://app.towns.com/t/0x3681c46ad8336f943ef22193a78f53042f612be0/channels/203681c46ad8336f943ef22193a78f53042f612be0146e3e582a9cac51238427/?panel=channel&stackId=&channelId=203681c46ad8336f943ef22193a78f53042f612be0146e3e582a9cac51238427",
+          "https://app.towns.com/t/0x3681c46ad8336f943ef22193a78f53042f612be0/channels/203681c46ad8336f943ef22193a78f53042f612be00000000000000000000000/?panel=profile&stackId=main&profileId=0x2b194d787311763Aa6c7727a3431cE0b405Ec267",
+          "https://app.towns.com/t/0x3681c46ad8336f943ef22193a78f53042f612be0/channels/203681c46ad8336f943ef22193a78f53042f612be0cbdc4b5e664179fa058438/?panel=channel&stackId=&channelId=203681c46ad8336f943ef22193a78f53042f612be0cbdc4b5e664179fa058438",
+          "https://app.towns.com/t/0x3681c46ad8336f943ef22193a78f53042f612be0/channels/203681c46ad8336f943ef22193a78f53042f612be0036dca3bc02504536b0d44/?panel=channel&stackId=&channelId=203681c46ad8336f943ef22193a78f53042f612be0036dca3bc02504536b0d44"
+        ]
+      },
+      {
+        "groupTag": "Lonely",
+        "chatUrls": [
+          "https://app.towns.com/t/0x2c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa/channels/202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa838d4f1ad57d620527357c/?panel=channel&stackId=&channelId=202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa838d4f1ad57d620527357c",
+          "https://app.towns.com/t/0x2c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa/channels/202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa5dc7a0e2c6b93783187b1d/?panel=channel&stackId=&channelId=202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa5dc7a0e2c6b93783187b1d",
+          "https://app.towns.com/t/0x2c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa/channels/202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa0000000000000000000000/?panel=channel&stackId=&channelId=202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa0000000000000000000000",
+          "https://app.towns.com/t/0x2c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfa/channels/202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfaf92fc81971b5d0326b2113/?panel=channel&stackId=&channelId=202c15e6ac92cd3ec65f9f34771851e2fd9d8b1bfaf92fc81971b5d0326b2113"
+        ]
+      },
+      {
+        "groupTag": "The Diary of Jane",
+        "chatUrls": [
+          "https://app.towns.com/t/0xb5f1ac0537ab2df67a40396aece252ca27bf4870/channels/20b5f1ac0537ab2df67a40396aece252ca27bf48700000000000000000000000?panel=channel&stackId=&channelId=20b5f1ac0537ab2df67a40396aece252ca27bf48700000000000000000000000",
+          "https://app.towns.com/t/0xb5f1ac0537ab2df67a40396aece252ca27bf4870/channels/20b5f1ac0537ab2df67a40396aece252ca27bf487093664ea7d7effc97fcb1d0/?panel=channel&stackId=&channelId=20b5f1ac0537ab2df67a40396aece252ca27bf487093664ea7d7effc97fcb1d0",
+          "https://app.towns.com/t/0xb5f1ac0537ab2df67a40396aece252ca27bf4870/channels/20b5f1ac0537ab2df67a40396aece252ca27bf48701f23df87b49f1e22d48a86/?panel=channel&stackId=&channelId=20b5f1ac0537ab2df67a40396aece252ca27bf48701f23df87b49f1e22d48a86"
+        ]
+      },
+      {
+        "groupTag": "Orochi",
+        "chatUrls": [
+        "https://app.towns.com/t/0xcffc2997bdb93026d0d0bcc95f26b237f8653c94/channels/20cffc2997bdb93026d0d0bcc95f26b237f8653c940000000000000000000000/?panel=channel&stackId=&channelId=20cffc2997bdb93026d0d0bcc95f26b237f8653c940000000000000000000000",
+        "https://app.towns.com/t/0xcffc2997bdb93026d0d0bcc95f26b237f8653c94/channels/20cffc2997bdb93026d0d0bcc95f26b237f8653c9498f558a21e164b964b7222/?panel=channel&stackId=&channelId=20cffc2997bdb93026d0d0bcc95f26b237f8653c9498f558a21e164b964b7222",
+        "https://app.towns.com/t/0xcffc2997bdb93026d0d0bcc95f26b237f8653c94/channels/20cffc2997bdb93026d0d0bcc95f26b237f8653c940740eee4736735cb4ff5ec/?panel=channel&stackId=&channelId=20cffc2997bdb93026d0d0bcc95f26b237f8653c940740eee4736735cb4ff5ec",
+        "https://app.towns.com/t/0xcffc2997bdb93026d0d0bcc95f26b237f8653c94/channels/20cffc2997bdb93026d0d0bcc95f26b237f8653c9415cb041712476abdafcbb0/?panel=channel&stackId=&channelId=20cffc2997bdb93026d0d0bcc95f26b237f8653c9415cb041712476abdafcbb0"
+        ]
+    }
+
+]
+
+}

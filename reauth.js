@@ -7,6 +7,11 @@ async function reauth(page, profile) {
     try {
         logger.info('Начало процесса реаутентификации...');
         
+        logger.info('Navigating to Towns homepage...');
+        await page.goto('https://app.towns.com', { 
+            waitUntil: 'domcontentloaded',
+            timeout: 30000
+        });
         // Нажимаем кнопку Reauthenticate
         const reauthButtonSelector = 'xpath=/html/body/div/div[1]/div[2]/div/div[3]/div/div[3]/div/button';
         await page.waitForSelector(reauthButtonSelector, { 
@@ -16,8 +21,12 @@ async function reauth(page, profile) {
         await page.locator(reauthButtonSelector).click();
         await waitForPageReady(page);
         
-        // Создаем экземпляр EmailReader
-        const emailReader = new EmailReader(profile.email, profile.emailPassword);
+        // Создаем экземпляр EmailReader с передачей icloudEmail
+        const emailReader = new EmailReader(
+            profile.email,
+            profile.emailPassword,
+            profile.icloudEmail // Передаем icloudEmail как targetEmail
+        );
         
         // Определяем селекторы для входа через email
         const emailButtonSelectors = [

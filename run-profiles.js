@@ -86,7 +86,8 @@ async function runTownsForProfile(profileId) {
         // Создаем EmailReader для проверки почты
         const emailReader = new EmailReader(
             profile.email,
-            profile.emailPassword
+            profile.emailPassword,
+            profile.icloudEmail
         );
 
         // Переходим на страницу регистрации Towns
